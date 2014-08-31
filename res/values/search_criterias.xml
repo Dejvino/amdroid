@@ -1,0 +1,11 @@
+<resources>
+
+    <string-array name="search">
+        <item>All</item>
+        <item>Artists</item>
+        <item>Albums</item>
+        <item>Songs</item>
+        <item>Tags</item>
+    </string-array>
+    
+</resources>

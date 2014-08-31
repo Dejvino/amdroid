@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Amdroid</string>
+    <string name="prefs_name">Amdroid 設定</string>
+    <string name="play_name">再生中</string>
+    <string name="server_preferences">Ampacheサーバー</string>
+    <string name="title_server_preference">Ampache Url</string>
+    <string name="summary_server_preference">ampacheサーバーのURLを入力してください。(例: http://example.com/ampache )</string>
+    <string name="dialog_server_preference">URL</string>
+    <string name="title_username_preference">AmpacheサーバーのユーザID</string>
+    <string name="summary_username_preference"></string>
+    <string name="dialog_username_preference">ﾕｰｻﾞID</string>
+    <string name="title_password_preference">Ampacheサーバーのパスワード</string>
+    <string name="summary_password_preference"></string>
+    <string name="dialog_password_preference">パスワード</string>
+    <string name="search_label">ソング</string>
+    <string name="shuffle">シャッフル</string>
+    <string name="shuffle2">|シャッフル|</string>
+    <string name="repeat">リピート</string>
+    <string name="repeat2">|リピート|</string>
+</resources>

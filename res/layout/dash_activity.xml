@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+		<TextView android:layout_width="fill_parent"
+			android:textSize="14sp" android:layout_height="wrap_content"
+			android:text="Albums of the moment:" android:layout_marginTop="10dp"
+			android:layout_marginBottom="10dp" />
+
+		<ImageView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:src="@drawable/the_shit" />
+
+		<TextView android:layout_width="fill_parent"
+			android:textSize="14sp" android:layout_height="wrap_content"
+			android:text="Recently played songs:" android:layout_marginTop="10dp"
+			android:layout_marginBottom="10dp" />
+
+		<ListView android:id="@+id/recently_played_songs"
+			android:layout_width="fill_parent" android:layout_height="fill_parent" />
+
+	</LinearLayout>

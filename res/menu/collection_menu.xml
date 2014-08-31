@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/playing" android:title="Now Playing" android:icon="@android:drawable/ic_media_play" />
+  <item android:id="@+id/prefs" android:title="Preferences" android:icon="@android:drawable/ic_menu_preferences" />
+  <item android:id="@+id/dashboard" android:title="Dashboard" />
+  <!-- item android:id="@+id/addall" android:title="Add All" android:icon="@android:drawable/ic_menu_add" /-->
+</menu>
