@@ -35,13 +35,14 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.sound.ampache.PlaylistFragment;
 import com.sound.ampache.objects.*;
-import com.sound.ampache.service.IPlayerService;
 import com.sound.ampache.utility.Player;
 import com.sound.ampache.utility.Playlist;
 
-public class PlayerService extends Service {
-	private static final String LOG_TAG = "Amdroid_PlayerService";
+public class PlayerService extends Service
+{
+	private static final String LOG_TAG = "Ampache_Amdroid_PlayerService";
 
 	// Basic service components
 	private Player mediaPlayer;
@@ -234,6 +235,11 @@ public class PlayerService extends Service {
 			if ( remove >= 0 )
 				clients.remove( remove );
 		}
+
+		public void setAuthToken(String authToken)
+		{
+			mediaPlayer.setAuthToken(authToken);
+		}
 	};
 
 
@@ -332,15 +338,22 @@ public class PlayerService extends Service {
 	// Start notifications
 	public void statusNotify() {
 		// Setup Notification Manager for Amdroid
+		Context context = getApplicationContext();
 		NotificationManager amdroidNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		int icon = com.sound.ampache.R.drawable.amdroid_notification;
-		String mediaName = playlist.getCurrentMedia().name; 
+
+		String mediaName = "No media";
+		String extraString = "";
+		if (playlist != null && playlist.getCurrentMedia() != null) {
+			mediaName = playlist.getCurrentMedia().name;
+			extraString = playlist.getCurrentMedia().extraString();
+		}
 		CharSequence tickerText = "Amdroid - " + mediaName;              
 		long when = System.currentTimeMillis();        
-		Context context = getApplicationContext();
-		String extraString = playlist.getCurrentMedia().extraString();
-		Intent notificationIntent = new Intent(this, com.sound.ampache.playlistActivity.class);
+
+		Intent notificationIntent = new Intent(this, PlaylistFragment.class);
 		PendingIntent mediaIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		// TODO: upgrade
 		Notification notification = new Notification(icon, tickerText, when);
 		notification.setLatestEventInfo(context, mediaName, extraString, mediaIntent);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;

@@ -52,13 +52,13 @@ public class Song extends Media implements Externalizable {
     }
 
     /* Replace the old session id with our current one */
-    public String liveUrl() {
-        return url.replaceAll("sid=[^&]+","sid=" + com.sound.ampache.amdroid.comm.authToken).replaceFirst(".ogg$", ".mp3");
+    public String liveUrl(String authToken) {
+        return url.replaceAll("sid=[^&]+","sid=" + authToken).replaceFirst(".ogg$", ".mp3");
     }
 
     /* Replace old session id, to use with the Album Art */
-    public String liveArt() {
-        return art.replaceAll("auth=[^&]+","auth=" + com.sound.ampache.amdroid.comm.authToken);
+    public String liveArt(String authToken) {
+        return art.replaceAll("auth=[^&]+","auth=" + authToken);
     }
     
     public boolean hasChildren() {

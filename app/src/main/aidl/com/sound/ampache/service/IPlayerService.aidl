@@ -52,5 +52,7 @@ interface IPlayerService {
 	void closeService();
 	void registerMessenger( in Messenger messenger );
 	void unregisterMessenger( in Messenger messenger );
+
+	void setAuthToken(in String authToken);
 }
 

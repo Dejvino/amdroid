@@ -22,40 +22,30 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
-import com.sound.ampache.objects.Song;
 import com.sound.ampache.objects.Media;
+import com.sound.ampache.objects.Song;
 
-public final class playlistActivity extends Activity implements OnItemClickListener,
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public final class PlaylistFragment extends Fragment implements OnItemClickListener,
 		GlobalMediaPlayerControl.PlayingIndexListener,
 		GlobalMediaPlayerControl.PlaylistCurrentListener
 {
@@ -66,17 +56,21 @@ public final class playlistActivity extends Activity implements OnItemClickListe
 
     private Boolean albumArtEnabled = false;
 
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        
-        // Set up our view :D
-        setContentView(R.layout.playlist);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		return inflater.inflate(R.layout.playlist_layout, container, false);
+	}
 
-        lv = (ListView) findViewById(R.id.list);
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState)
+	{
+		super.onViewCreated(view, savedInstanceState);
+
+        lv = (ListView) view.findViewById(R.id.list);
         lv.setOnItemClickListener(this);
 
-        pla = new playlistAdapter(this);
+        pla = new playlistAdapter(getActivity());
         lv.setAdapter(pla);
         
         // register our adapter to be called when a change to the currentPlaylist ocurrs  
@@ -86,7 +80,7 @@ public final class playlistActivity extends Activity implements OnItemClickListe
         amdroid.playbackControl.setPlaylistCurrentListener( this );
 
         // Setup Album Art View TODO
-        artView = (ImageView)findViewById(R.id.picview);
+        artView = (ImageView) view.findViewById(R.id.picview);
 
         // Load Album Art on Entry, currently SLOOOOOOW so TODO
         //if ( amdroid.playbackControl.getPlaylistCurrent().size() > 0 )
@@ -94,18 +88,19 @@ public final class playlistActivity extends Activity implements OnItemClickListe
 
         // Center the playlist at the current song
         centerList( 0 );
-        
+
+		amdroid.networkClient.auth();
     }
 
-    @Override
+    /*@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.playlist_menu, menu);
         return true;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.pl_clear:
@@ -156,7 +151,7 @@ public final class playlistActivity extends Activity implements OnItemClickListe
             break;
         }
         return true;
-    }
+    }*/
 
     private void loadAlbumArt()
     {
@@ -171,10 +166,10 @@ public final class playlistActivity extends Activity implements OnItemClickListe
         Song chosen = (Song) amdroid.playbackControl.getPlaylistCurrent().get(amdroid.playbackControl.getPlayingIndex());
 
         Log.i("Amdroid", "Art URL     - " + chosen.art );
-        Log.i("Amdroid", "Art URL (C) - " + chosen.liveArt() );
+        Log.i("Amdroid", "Art URL (C) - " + chosen.liveArt("#TOKEN#") );
 
         try {
-            URL artUrl = new URL( chosen.liveArt() );
+            URL artUrl = new URL( chosen.liveArt("#TOKEN#") );
             Object artContent = artUrl.getContent();
             Drawable albumArt = Drawable.createFromStream( (InputStream) artContent, "src" );
             artView.setImageDrawable( albumArt );
@@ -299,18 +294,14 @@ public final class playlistActivity extends Activity implements OnItemClickListe
     }
 
 
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    /*public boolean onKeyDown(int keyCode, KeyEvent event)  {
         if (android.os.Build.VERSION.SDK_INT < 5 && keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             onBackPressed();
             return true;
         }
 
         return super.onKeyDown(keyCode, event);
-    }
-    
-    public void onBackPressed() {
-           ((AmdroidActivityGroup) getParent()).setActivity(AmdroidActivityGroup.GOTO_HOME);
-    }
+    }*/
 
     @Override
 	public void onPlayingIndexChange()
@@ -329,6 +320,3 @@ public final class playlistActivity extends Activity implements OnItemClickListe
 
 
 }
-
-// ex:tabstop=4 shiftwidth=4 expandtab:
-

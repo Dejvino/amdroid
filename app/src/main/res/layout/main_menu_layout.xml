@@ -2,10 +2,11 @@
 
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:layout_width="fill_parent"
-	android:background="#FFF"
-	android:paddingTop="5dip" 
+    android:paddingTop="5dip"
 	android:layout_height="wrap_content"
-	android:stretchColumns="1,3,5,7,9,11">
+	android:stretchColumns="1,3,5,7,9,11"
+    android:background="#cc666666"
+    android:paddingBottom="5dip">
 	
 	<TableRow>
 		<ImageButton android:id="@+id/goto_home"

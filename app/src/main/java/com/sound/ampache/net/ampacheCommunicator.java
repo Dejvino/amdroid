@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.net;
 
 /* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
  * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
@@ -27,11 +27,14 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.ArrayList;
 import com.sound.ampache.objects.*;
+
 import android.content.SharedPreferences;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
+
 import java.lang.Integer;
 import java.lang.Long;
 import java.security.MessageDigest;
@@ -39,7 +42,7 @@ import java.util.Date;
 
 public class ampacheCommunicator
 {
-
+	public static String LOG_TAG = "Ampache_Amdroid_Comm";
     public String authToken = "";
     public int artists;
     public int albums;
@@ -52,7 +55,7 @@ public class ampacheCommunicator
 
     private SharedPreferences prefs;
 
-    ampacheCommunicator(SharedPreferences preferences, Context context) throws Exception {
+    public ampacheCommunicator(SharedPreferences preferences, Context context) throws Exception {
         prefs = preferences;
         mCtxt = context;
         System.setProperty("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
@@ -67,7 +70,8 @@ public class ampacheCommunicator
             if (hand.errorCode == 401) {
                 this.perform_auth_request();
             }
-        } catch (Exception poo) {
+        } catch (Exception e) {
+			Log.e(LOG_TAG, "Operation PING failed: " + e.getMessage(), e);
         }
     }
 
@@ -95,7 +99,8 @@ public class ampacheCommunicator
         String user = prefs.getString("server_username_preference", "");
         try {
             reader.parse(new InputSource(fetchFromServer("action=handshake&auth="+hash+"&timestamp="+time+"&version=350001&user="+user)));
-        } catch (Exception poo) {
+        } catch (Exception e) {
+			Log.e(LOG_TAG, "Operation AUTH failed: " + e.getMessage(), e);
             lastErr = "Could not connect to server";
         }
 
@@ -137,7 +142,8 @@ public class ampacheCommunicator
             
             incomingRequestHandler = new Handler() {
                     public void handleMessage(Message msg) {
-                        String[] directive = (String[]) msg.obj;
+                        Directive directiveObj = (Directive) msg.obj;
+						String[] directive = directiveObj.args;
                         String append = "";
                         boolean goodcache = false;
                         String error = null;
@@ -203,8 +209,9 @@ public class ampacheCommunicator
                         try {
                             URL theUrl = new URL(prefs.getString("server_url_preference", "") + "/server/xml.server.php?" + append);
                             dataIn = new InputSource(theUrl.openStream());
-                        } catch (Exception poo) {
-                            error = poo.toString();
+                        } catch (Exception e) {
+							Log.e(LOG_TAG, "Fetching #904 failed: " + e.getMessage(), e);
+                            error = e.toString();
                         }
 
                         if (stop == true) {
@@ -216,8 +223,9 @@ public class ampacheCommunicator
                         reader.setContentHandler(hand);
                         try {
                             reader.parse(dataIn);
-                        } catch (Exception poo) {
-                            error = poo.toString();;
+                        } catch (Exception e) {
+							Log.e(LOG_TAG, "Parsing #995 failed: " + e.getMessage(), e);
+                            error = e.toString();
                         }
                         
                         if (hand.error != null) {
@@ -225,7 +233,8 @@ public class ampacheCommunicator
                                 try {
                                     ampacheCommunicator.this.perform_auth_request();
                                     this.sendMessage(msg);
-                                } catch (Exception poo) {
+                                } catch (Exception e) {
+									Log.e(LOG_TAG, "Operation AUTH #953 failed: " + e.getMessage(), e);
                                 }
                                 return;
                             }
@@ -246,7 +255,8 @@ public class ampacheCommunicator
                         }
                         try {
                             msg.replyTo.send(reply);
-                        } catch (Exception poo) {
+                        } catch (Exception e) {
+							Log.e(LOG_TAG, "Operation REPLY #958 failed: " + e.getMessage(), e);
                             //well shit, that sucks doesn't it
                         }
                     }

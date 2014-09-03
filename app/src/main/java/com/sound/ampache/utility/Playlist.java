@@ -57,13 +57,28 @@ public class Playlist extends ArrayList<Media> {
 
 	// Gets **********************************************************
 
-	public int getCurrentIndex() { return currentIndex; }
+	public int getCurrentIndex()
+	{
+		return currentIndex;
+	}
 
-	public Media getCurrentMedia() { return super.get( currentIndex ); }
+	public Media getCurrentMedia()
+	{
+		if (size() <= 0) {
+			return null;
+		}
+		return super.get(currentIndex);
+	}
 
-	public boolean getShufflePlay() { return shuffleEnabled; }
+	public boolean getShufflePlay()
+	{
+		return shuffleEnabled;
+	}
 
-	public boolean getRepeatPlay() { return repeatEnabled; }
+	public boolean getRepeatPlay()
+	{
+		return repeatEnabled;
+	}
 
 
 	// Sets **********************************************************
@@ -127,11 +142,17 @@ public class Playlist extends ArrayList<Media> {
 			currentIndex = next;
 		}
 		else {
-			currentIndex++;
-
-			// Reset playlist to beginning if repeat is enabled
-			if ( currentIndex >= super.size() && repeatEnabled )
-				currentIndex = 0;
+			// move to the next media
+			if ((currentIndex + 1) >= super.size()) {
+				if (repeatEnabled) {
+					// cycle back to the start when in repeat mode
+					currentIndex = 0;
+				} else {
+					// nowhere to go
+				}
+			} else {
+				currentIndex++;
+			}
 		}
 
 		// Index is within the list bounds
@@ -165,8 +186,9 @@ public class Playlist extends ArrayList<Media> {
 			}
 		}
 		// Do not call previous if it is the first media
-		else if ( currentIndex > 0 )
+		else if ( currentIndex > 0 ) {
 			currentIndex--;
+		}
 
 		// Index is within the list bounds
 		if ( currentIndex >= 0 && currentIndex < super.size() )

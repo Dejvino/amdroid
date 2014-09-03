@@ -65,12 +65,12 @@ public class Media extends ampacheObject implements Parcelable {
         return "";
     }
 
-    public String getLiveUrl() {
-        if ( getType() == "Song" )
-            return ( (Song) this ).liveUrl();
+    public String getLiveUrl(String authToken) {
+        if (getType().equals("Song"))
+            return ( (Song) this ).liveUrl(authToken);
 
-        if ( getType() == "Video" )
-            return ( (Video) this ).liveUrl();
+        if (getType().equals("Video"))
+            return ( (Video) this ).liveUrl(authToken);
 
         return "";
     }

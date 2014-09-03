@@ -65,6 +65,8 @@ public class Player {
 
 	private ArrayList<PlayerListener> mPlayerListeners;
 
+	private String authToken;
+
 	public interface PlayerListener {
 		abstract public void onTogglePlaying( boolean playing );
 		abstract public void onPlayerStopped();
@@ -160,20 +162,23 @@ public class Player {
 	}
 
 	public void playMedia(Media media) {
-		if (media.getType() == "Song") {
+		if (media == null) {
+			Log.w(TAG, "Null input, cannot playMedia().");
+			return;
+		}
+		if ("Song".equals(media.getType())) {
 			playSong( (Song) media );
-		}
-		if (media.getType() == "Video") {
+		} else if ("Video".equals(media.getType())) {
 			playVideo( (Video) media );
-		}
-
-		Log.e(TAG, "Invalid Media Type: " + media.getType());
+		} else {
+            Log.e(TAG, "Invalid Media Type: " + media.getType());
+        }
 	}
 
 	public void playSong(Song song) {
 		setState(STATE.Idle);
 
-		String uri = song.liveUrl();
+		String uri = song.liveUrl(authToken);
 		Log.v(TAG, "Playing uri: " + uri);
 
 		if (mState == STATE.Prepared || mState == STATE.Started
@@ -202,7 +207,7 @@ public class Player {
 	public void playVideo(Video video) {
 		setState(STATE.Idle);
 
-		String uri = video.liveUrl();
+		String uri = video.liveUrl(authToken);
 		Log.v(TAG, "Playing uri: " + uri);
 
 		if (mState == STATE.Prepared || mState == STATE.Started
@@ -289,6 +294,11 @@ public class Player {
 		TelephonyManager tmgr = (TelephonyManager) mContext
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		tmgr.listen(mPhoneStateListener, 0);
+	}
+
+	public void setAuthToken(String authToken)
+	{
+		this.authToken = authToken;
 	}
 
 	public void setPlayerListener(PlayerListener StatusChangeObject) {

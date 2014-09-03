@@ -25,24 +25,26 @@ package com.sound.ampache;
 import java.util.Formatter;
 import java.util.Locale;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.AttributeSet;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public final class staticMedia extends SlidingDrawer {
+public final class MiniPlayer extends Fragment
+{
     private ProgressBar         mProgress;
     private TextView            mEndTime, mCurrentTime;
     private boolean             mDragging;
@@ -220,44 +222,42 @@ public final class staticMedia extends SlidingDrawer {
 		}
 	};
 
-	/* 
-	 * Constructor and initialization functions
-	 */
-    public staticMedia(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-    
-    public void onFinishInflate(){
-    	super.onFinishInflate();
-	// TODO!!!
+	public MiniPlayer()
+	{
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.mini_player, container, false);
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState)
+	{
+		super.onViewCreated(view, savedInstanceState);
+
+		// TODO!!!
     	//amdroid.mp.setOnCompletionListener( mCompletionListener );
     	//amdroid.mp.setOnPreparedListener( mPreparedListener );
     	//amdroid.mp.setOnBufferingUpdateListener( mBufferingUpdateListener );
-    	initControllerView();
-    }
-    
 
-    /* 
-     * Functions
-     */
-    private void initControllerView() {
     	// Bind listeners to our components
-        mPauseButton = (ImageButton) findViewById(R.id.pause);
+        mPauseButton = (ImageButton) view.findViewById(R.id.pause);
         if (mPauseButton != null) {
             mPauseButton.setOnClickListener(mPauseListener);
         }
         
-        mNextButton = (ImageButton) findViewById(R.id.next);
+        mNextButton = (ImageButton) view.findViewById(R.id.next);
         if (mNextButton != null) {
             mNextButton.setOnClickListener(mNextListener);
         }
         
-        mPrevButton = (ImageButton) findViewById(R.id.prev);
+        mPrevButton = (ImageButton) view.findViewById(R.id.prev);
         if (mPrevButton != null) {
             mPrevButton.setOnClickListener(mPrevListener);
         }
         
-        mRepeatButton = (ImageButton) findViewById(R.id.repeat);
+        mRepeatButton = (ImageButton) view.findViewById(R.id.repeat);
         if (mRepeatButton != null) {
 			mRepeatButton.setOnClickListener( mRepeatListener );
 			/* TODO!!
@@ -268,7 +268,7 @@ public final class staticMedia extends SlidingDrawer {
 			*/
 		}
         
-        mShuffleButton = (ImageButton) findViewById(R.id.shuffle);
+        mShuffleButton = (ImageButton) view.findViewById(R.id.shuffle);
         if (mShuffleButton != null) {
             mShuffleButton.setOnClickListener(mShuffleListener);
 		/* TODO!!
@@ -279,7 +279,7 @@ public final class staticMedia extends SlidingDrawer {
 		*/
         }
 
-        mProgress = (ProgressBar) findViewById(R.id.mediacontroller_progress);
+        mProgress = (ProgressBar) (SeekBar) view.findViewById(R.id.mediacontroller_progress);
         if (mProgress != null) {
             if (mProgress instanceof SeekBar) {
                 SeekBar seeker = (SeekBar) mProgress;
@@ -288,8 +288,8 @@ public final class staticMedia extends SlidingDrawer {
             mProgress.setMax(1000);
         }
 
-        mEndTime = (TextView) findViewById(R.id.time);
-        mCurrentTime = (TextView) findViewById(R.id.time_current);
+        mEndTime = (TextView) view.findViewById(R.id.time);
+        mCurrentTime = (TextView) view.findViewById(R.id.time_current);
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
         //show(); // TODO!!
@@ -344,7 +344,7 @@ public final class staticMedia extends SlidingDrawer {
     }
 
     private void updatePausePlay() {
-        ImageButton button = (ImageButton) findViewById(R.id.pause);
+        ImageButton button = mPauseButton;
         if (button == null)
             return;
 
@@ -354,48 +354,9 @@ public final class staticMedia extends SlidingDrawer {
             button.setImageResource(android.R.drawable.ic_media_play);
         }
     }
-    
-	@Override
-	public boolean dispatchKeyEvent( KeyEvent event )
+
+	private Context getContext()
 	{
-		int keyCode = event.getKeyCode();
-		if ( event.getRepeatCount() == 0
-				&& ( keyCode == KeyEvent.KEYCODE_HEADSETHOOK || keyCode == KeyEvent.KEYCODE_SPACE ) )
-		{
-			amdroid.playbackControl.doPauseResume();
-			return true;
-		} else if ( keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
-				|| keyCode == KeyEvent.KEYCODE_VOLUME_UP )
-		{
-			// don't show the controls for volume adjustment
-			return super.dispatchKeyEvent( event );
-		}
-		return super.dispatchKeyEvent( event );
+		return getActivity();
 	}
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        if (mPauseButton != null) {
-            mPauseButton.setEnabled(enabled);
-        }
-        if (mNextButton != null) {
-            mNextButton.setEnabled(enabled && mNextListener != null);
-        }
-        if (mPrevButton != null) {
-            mPrevButton.setEnabled(enabled && mPrevListener != null);
-        }
-        if (mShuffleButton != null) {
-            mShuffleButton.setEnabled(enabled && mShuffleListener != null);
-        }
-        if (mRepeatButton != null) {
-            mRepeatButton.setEnabled(enabled && mRepeatListener != null);
-        }
-        if (mProgress != null) {
-            mProgress.setEnabled(enabled);
-        }
-
-        super.setEnabled(enabled);
-    }
-    
-
 }

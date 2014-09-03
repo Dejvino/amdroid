@@ -25,53 +25,61 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.objects.Directive;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-public class PlaylistsActivity extends Activity implements IsFetchingListener {
+public class PlaylistsFragment extends Fragment implements IsFetchingListener
+{
    
 	private AmpacheListView ampacheListView;
 	private TextView emptyTextView;
 
 	private ProgressBar progressBar;
 	private TextView headerTextView;
-	
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.playlists_activity);       
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		return inflater.inflate(R.layout.playlists_layout, container, false);
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState)
+	{
+		super.onViewCreated(view, savedInstanceState);
         
-        emptyTextView = (TextView)findViewById( android.R.id.empty );
+        emptyTextView = (TextView) view.findViewById( android.R.id.empty );
 		emptyTextView.setText( "<No playlists found>" );
 
-		ampacheListView = (AmpacheListView)findViewById( android.R.id.list );
+		ampacheListView = (AmpacheListView) view.findViewById( android.R.id.list );
 		ampacheListView.setFastScrollEnabled( true );
 		ampacheListView.setEmptyView( emptyTextView );
 		ampacheListView.setHeaderDividersEnabled( true );
 		ampacheListView.setIsFetchingListener( this );
         
-		progressBar = (ProgressBar)findViewById(R.id.progress_bar);
+		progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 		progressBar.setIndeterminate( true );
 		progressBar.setVisibility( View.INVISIBLE );
-		headerTextView = (TextView)findViewById(R.id.text_view);
+		headerTextView = (TextView) view.findViewById(R.id.text_view);
 		headerTextView.setText( "Playlists" );
-		
-        String[] directive = new String[3];
-        directive[0] = "playlists";
-        directive[1] = "";
-        directive[2] = "";
+
+		Directive directive = new Directive("playlists", "", "");
      
         ampacheListView.mDataHandler.enqueMessage( 0x1336, directive, 0, true );  
         
         ampacheListView.backOffset=1;
+
+		amdroid.networkClient.auth();
     }
 
 	@Override   
@@ -90,14 +98,14 @@ public class PlaylistsActivity extends Activity implements IsFetchingListener {
     private void updateHeaderTextView()
 	{
 		String append = "Playlists";
-		LinkedList<String[]> history = ampacheListView.getHistory();
+		LinkedList<Directive> history = ampacheListView.getHistory();
 
-		ListIterator<String[]> itr = history.listIterator();
+		ListIterator<Directive> itr = history.listIterator();
 		//Increment once to remove the empty history field
 		itr.next();
 	    while(itr.hasNext())
 	    {
-	      append += "/"+itr.next()[2];
+	      append += "/"+itr.next().args[2];
 	    }
 	    
 	    headerTextView.setText( append );
@@ -113,11 +121,6 @@ public class PlaylistsActivity extends Activity implements IsFetchingListener {
             return ampacheListView.backPressed();
         }
 
-        return false;
-    }
-    
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
         return false;
     }
 

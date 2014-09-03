@@ -24,6 +24,7 @@ package com.sound.ampache;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import com.sound.ampache.objects.Directive;
 import com.sound.ampache.objects.Song;
 import com.sound.ampache.objects.ampacheObject;
 
@@ -32,6 +33,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -45,9 +47,9 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 	public DataHandler mDataHandler;
 	private collectionAdapter mCollectionAdapter;
 	private ArrayList<ampacheObject> mAmpacheObjectList;
-	private String[] directive = new String[3];
+	private Directive directive = new Directive();
 	private IsFetchingListener isFetchingListener;
-	private LinkedList<String[]> history = new LinkedList<String[]>();
+	private LinkedList<Directive> history = new LinkedList<Directive>();
 	public int backOffset = 0;
 
 	public AmpacheListView( Context context, AttributeSet attrs )
@@ -68,7 +70,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 		setOnItemLongClickListener( this );
 	}
 
-	public LinkedList<String[]> getHistory()
+	public LinkedList<Directive> getHistory()
 	{
 		return history;
 	}
@@ -94,9 +96,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 			amdroid.playbackControl.addPlaylistCurrent( (Song)val );
 			return;
 		}
-		directive[0] = val.childString();
-		directive[1] = val.id;
-		directive[2] = val.name;
+		Directive directive = new Directive(val.childString(), val.id, val.name);
 
 		mDataHandler.enqueMessage( DataHandler.AMPACHE_INIT_REQUEST, directive, 0, true );
 
@@ -110,7 +110,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 				Toast.LENGTH_LONG ).show();
 		if ( cur.hasChildren() )
 		{
-			mDataHandler.enqueMessage( DataHandler.ENQUEUE_SONG, cur.allChildren(), 0, false );
+			mDataHandler.enqueMessage( DataHandler.ENQUEUE_SONG, new Directive(cur.allChildren()), 0, false );
 		} else
 		{
 			amdroid.playbackControl.addPlaylistCurrent( (Song)cur );
@@ -133,7 +133,11 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 		if ( history.size() > 1 )
 		{
 			history.removeLast();
-			directive = history.getLast().clone();
+			try {
+				directive = history.getLast().clone();
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 			mDataHandler.enqueMessage( DataHandler.AMPACHE_INIT_REQUEST, directive, 0, false );
 			ret = true;
 		} else if ( history.size() == 1 - backOffset )
@@ -169,11 +173,15 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 			}
 		}
 
-		public void enqueMessage( int what, Object obj, int startIndex, boolean addHistory )
+		public void enqueMessage( int what, Directive directive, int startIndex, boolean addHistory )
 		{
 			if ( addHistory )
 			{
-				history.add( ( (String[])obj ).clone() );
+				try {
+					history.add(directive.clone());
+				} catch (CloneNotSupportedException e) {
+					Log.e(VIEW_LOG_TAG, "Cloning of directive failed.", e);
+				}
 			}
 			if ( isFetching && what == AMPACHE_INIT_REQUEST )
 			{
@@ -185,15 +193,20 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 			}
 			Message requestMsg = this.obtainMessage();
 			requestMsg.arg1 = startIndex;
-			requestMsg.obj = (String[])obj;
+			requestMsg.obj = directive;
 			requestMsg.what = what;
 			// tell it how to handle the stuff
 			requestMsg.replyTo = new Messenger( this );
-			amdroid.requestHandler.incomingRequestHandler.sendMessage( requestMsg );
+			// old:
+			//amdroid.requestHandler.incomingRequestHandler.sendMessage( requestMsg );
+			Log.d("AmpacheAmdroidList", "Sending message: " + requestMsg.toString());
+			amdroid.networkClient.sendMessage(requestMsg);
 		}
 
+		@Override
 		public void handleMessage( Message msg )
 		{
+			Log.d("AmpacheAmdroidList", "Handling message: " + msg.toString());
 			if ( msg.what == AMPACHE_INIT_REQUEST || msg.what == AMPACHE_INC_REQUEST )
 			{
 				if ( stopIncFetch && msg.what == AMPACHE_INC_REQUEST )

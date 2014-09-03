@@ -25,13 +25,17 @@ package com.sound.ampache;
 import java.net.URLEncoder;
 
 import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.objects.Directive;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,7 +43,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public final class songSearch extends Activity implements IsFetchingListener, OnClickListener {
+public final class SearchFragment extends Fragment implements IsFetchingListener, OnClickListener {
 
 	private Spinner searchCriteria;
 	private EditText searchString;
@@ -50,36 +54,40 @@ public final class songSearch extends Activity implements IsFetchingListener, On
 	private ProgressBar progressBar;
 	private TextView headerTextView;
 
-	/** Called when the activity is first created. */
 	@Override
-	public void onCreate( Bundle savedInstanceState )
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		super.onCreate( savedInstanceState );
-		setContentView( R.layout.search_activity );
+		return inflater.inflate(R.layout.search_activity, container, false);
+	}
 
-		searchCriteria = (Spinner)findViewById( R.id.search_spinner );
-		ArrayAdapter adapter = ArrayAdapter.createFromResource( this, R.array.search,
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState)
+	{
+		super.onViewCreated(view, savedInstanceState);
+
+		searchCriteria = (Spinner) view.findViewById( R.id.search_spinner );
+		ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.search,
 				android.R.layout.simple_spinner_item );
 		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
 		searchCriteria.setAdapter( adapter );
-		searchString = (EditText)findViewById( R.id.search_text );
+		searchString = (EditText) view.findViewById( R.id.search_text );
 
 		// Bind clicklistener for our search button
-		( (ImageButton)findViewById( R.id.search_button ) ).setOnClickListener( this );
+		( (ImageButton) view.findViewById( R.id.search_button ) ).setOnClickListener( this );
 
-		emptyTextView = (TextView)findViewById( android.R.id.empty );
+		emptyTextView = (TextView) view.findViewById( android.R.id.empty );
 		emptyTextView.setText( "<No search results>" );
 
-		ampacheListView = (AmpacheListView)findViewById( android.R.id.list );
+		ampacheListView = (AmpacheListView) view.findViewById( android.R.id.list );
 		ampacheListView.setFastScrollEnabled( true );
 		ampacheListView.setEmptyView( emptyTextView );
 		ampacheListView.setHeaderDividersEnabled( true );
 		ampacheListView.setIsFetchingListener( this );
 
-		progressBar = (ProgressBar)findViewById( R.id.progress_bar );
+		progressBar = (ProgressBar) view.findViewById( R.id.progress_bar );
 		progressBar.setIndeterminate( true );
 		progressBar.setVisibility( View.INVISIBLE );
-		headerTextView = (TextView)findViewById( R.id.text_view );
+		headerTextView = (TextView) view.findViewById( R.id.text_view );
 		headerTextView.setText( "Search results" );
 	}
 
@@ -119,7 +127,7 @@ public final class songSearch extends Activity implements IsFetchingListener, On
 		// Clear history when searching, we should only be able to go back if a search result has
 		// been clicked.
 		ampacheListView.clearHistory();
-		ampacheListView.mDataHandler.enqueMessage( 0x1336, directive, 0, true );
+		ampacheListView.mDataHandler.enqueMessage( 0x1336, new Directive(directive), 0, true );
 
 	}
 
@@ -150,10 +158,5 @@ public final class songSearch extends Activity implements IsFetchingListener, On
 
 		return false;
 	}
-	
-	@Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return false;
-    }
 
 }

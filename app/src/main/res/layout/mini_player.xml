@@ -13,22 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.sound.ampache.staticMedia 
-	xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:orientation="vertical"
-	android:layout_gravity="bottom" 
-	android:id="@+id/static_media"
-	android:layout_width="fill_parent" 
-	android:layout_height="110dip"
-	android:handle="@+id/handle" 
-	android:content="@+id/content">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:id="@+id/mini_player">
 
-	<ImageView android:id="@id/handle" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:src="@drawable/handle" />
-
-	<LinearLayout android:id="@id/content"
+	<LinearLayout android:id="@+id/content"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" 
     	android:background="#CC666666"
@@ -90,7 +80,7 @@
 	            style="?android:attr/progressBarStyleHorizontal"
 	            android:layout_width="0dip"
 	            android:layout_weight="1"
-	            android:layout_height="30px"
+	            android:layout_height="wrap_content"
 	            android:layout_alignParentLeft="true"
 	            android:layout_alignParentRight="true" />
 	
@@ -108,4 +98,4 @@
 	    
 	</LinearLayout>
 
-</com.sound.ampache.staticMedia>
+</FrameLayout>

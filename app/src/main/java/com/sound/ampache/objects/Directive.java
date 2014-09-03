@@ -1,6 +1,6 @@
-package com.sound.ampache;
+package com.sound.ampache.objects;
 
-/* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
+/* Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -20,25 +20,58 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import com.sound.ampache.R;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class prefsActivity extends PreferenceActivity {
+/**
+ * Description:
+ *
+ * @author Dejvino
+ * @since 2014-08-31
+ */
+public class Directive implements Parcelable
+{
+	public String[] args;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
-    }
+	public Directive(String... args)
+	{
+		this.args = args;
+	}
 
-    protected void onDestroy() {
-        /* we want to tell other activities that we need to reload */
-        super.onDestroy();
-        amdroid.confChanged = true;
-        amdroid.comm.authToken = null;
-    }
+	private Directive(Parcel in)
+	{
+		args = new String[in.readInt()];
+		in.readStringArray(args);
+	}
+
+	@Override
+	public Directive clone() throws CloneNotSupportedException
+	{
+		return new Directive(args.clone());
+	}
+
+	@Override
+	public int describeContents()
+	{
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel parcel, int flags)
+	{
+		parcel.writeInt(args.length);
+		parcel.writeStringArray(args);
+	}
+
+	public static final Parcelable.Creator<Directive> CREATOR = new Parcelable.Creator<Directive>() {
+		public Directive createFromParcel(Parcel in)
+		{
+			return new Directive(in);
+		}
+
+		public Directive[] newArray(int size)
+		{
+			return new Directive[size];
+		}
+	};
 }
-

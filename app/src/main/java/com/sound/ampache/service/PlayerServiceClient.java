@@ -35,7 +35,7 @@ import com.sound.ampache.service.IPlayerService;
 
 public class PlayerServiceClient {
 
-	private static final String LOG_TAG = "Amdroid_PlayerServiceClient";
+	private static final String LOG_TAG = "Ampache_Amdroid_PlayerServiceClient";
 	private IPlayerService playerService;
 	private PlayerServiceConnection conn;
 	private Context mContext;

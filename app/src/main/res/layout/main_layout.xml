@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent">
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.sound.ampache.MainMenuFragment"
+            android:id="@+id/mainMenu"
+            android:layout_gravity="center_horizontal"
+            tools:layout="@layout/main_menu_layout" />
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/mainContent"
+            android:layout_weight="1">
+        </FrameLayout>
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.sound.ampache.MiniPlayer"
+            android:id="@+id/mini_player"
+            android:layout_gravity="center_horizontal"
+            tools:layout="@layout/mini_player"
+            />
+    </LinearLayout>
+</FrameLayout>

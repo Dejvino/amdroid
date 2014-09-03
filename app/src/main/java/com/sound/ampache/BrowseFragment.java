@@ -27,12 +27,20 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.net.NetworkWorker;
+import com.sound.ampache.objects.Directive;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -40,7 +48,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class BrowseActivity extends Activity implements OnItemClickListener, IsFetchingListener {
+public class BrowseFragment extends Fragment implements OnItemClickListener, IsFetchingListener
+{
+	private View rootView;
 
 	// Root list and adapter. This is only used to display the root options.
 	private ListView emptyListView;
@@ -53,30 +63,36 @@ public class BrowseActivity extends Activity implements OnItemClickListener, IsF
 	private ProgressBar progressBar;
 	private TextView headerTextView;
 
-	/** Called when the activity is first created. */
 	@Override
-	public void onCreate( Bundle savedInstanceState )
-	{
-		super.onCreate( savedInstanceState );
-		setContentView( R.layout.browse_activity );
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.browse_layout, container, false);
+	}
 
-		emptyListAdapter = new ArrayAdapter<String>( this, R.layout.list_item_music_root, emptyList );
-		emptyListView = (ListView)findViewById( android.R.id.empty );
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState)
+	{
+		super.onViewCreated(view, savedInstanceState);
+
+		rootView = view;
+
+		emptyListAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_music_root, emptyList);
+		emptyListView = (ListView) rootView.findViewById(android.R.id.empty);
 		emptyListView.setAdapter( emptyListAdapter );
 		emptyListView.setOnItemClickListener( this );
 
-		ampacheListView = (AmpacheListView)findViewById( android.R.id.list );
+		ampacheListView = (AmpacheListView) rootView.findViewById(android.R.id.list);
 		ampacheListView.setFastScrollEnabled( true );
 		ampacheListView.setEmptyView( emptyListView );
 		ampacheListView.setHeaderDividersEnabled( true );
 		ampacheListView.setIsFetchingListener( this );
-		
-		progressBar = (ProgressBar)findViewById(R.id.progress_bar);
+
+		progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
 		progressBar.setIndeterminate( true );
 		progressBar.setVisibility( View.INVISIBLE );
-		headerTextView = (TextView)findViewById(R.id.text_view);
+		headerTextView = (TextView) rootView.findViewById(R.id.text_view);
 		headerTextView.setText( "Music" );
-		
+
+		amdroid.networkClient.auth();
 	}
 
 	@Override
@@ -86,10 +102,7 @@ public class BrowseActivity extends Activity implements OnItemClickListener, IsF
 		value = (String)adapterView.getItemAtPosition( position );
 		value = value.toLowerCase();
 
-		String[] directive = new String[3];
-		directive[0] = value;
-		directive[1] = "";
-		directive[2] = value;
+		Directive directive = new Directive(value, "", value);
 		
 		emptyListView.setVisibility( View.GONE );
 
@@ -114,40 +127,14 @@ public class BrowseActivity extends Activity implements OnItemClickListener, IsF
 	private void updateHeaderTextView()
 	{
 		String append = "Music";
-		LinkedList<String[]> history = ampacheListView.getHistory();
+		LinkedList<Directive> history = ampacheListView.getHistory();
 
-		ListIterator<String[]> itr = history.listIterator();
+		ListIterator<Directive> itr = history.listIterator();
 	    while(itr.hasNext())
 	    {
-	      append += "/"+itr.next()[2];
+	      append += "/"+itr.next().args[2];
 	    }
 	    
 	    headerTextView.setText( append );
 	}
-	
-    /*
-     * Override "back button" behavior on android 1.6
-     */
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            // Take care of calling this method on earlier versions of
-            // the platform where it doesn't exist.
-            return ampacheListView.backPressed();
-        }
-
-        return false;
-    }
-    
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return false;
-    }
-
-    /*
-     * Override "back button" behavior on android 2.0 and later
-     *
-    public void onBackPressed() {
-        ampacheListView.backPressed();
-    }*/
-
 }

@@ -49,8 +49,8 @@ public class Video extends Media implements Externalizable {
     }
 
     /* Replace the old session id with our current one */
-    public String liveUrl() {
-        return url.replaceAll("sid=[^&]+","sid=" + com.sound.ampache.amdroid.comm.authToken);
+    public String liveUrl(String authToken) {
+        return url.replaceAll("sid=[^&]+","sid=" + authToken);
     }
 
     public boolean hasChildren() {

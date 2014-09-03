@@ -1,8 +1,8 @@
 package com.sound.ampache;
 
-/* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
- * Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
+/* Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
  * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
+ * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -22,51 +22,19 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import com.sound.ampache.net.ampacheCommunicator;
-
-import android.app.Application;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public final class amdroid extends Application {
+public class MainActivity extends Activity
+{
+	public static final String LOG_TAG = "Ampache_Amdroid_Main";
 
-	public static ampacheCommunicator comm;
-
-	public static int bufferPC;
-
-    public static Boolean playListVisible;
-    public static Boolean confChanged;
-
-    protected static Bundle cache;
-    private static Boolean mResumeAfterCall = false;
-    public static GlobalMediaPlayerControl playbackControl;
-
-	public static GlobalNetworkClient networkClient;
-    
-	// This variable should be set to true once the mediaplayer object has been initialized. I.e. a
-	// data source has been set and is prepared. 
-	public static boolean mediaplayerInitialized = false;
-
-	@Override
-    public void onCreate()
-	{
-		super.onCreate();
-
-		bufferPC = 0;
-
-        cache = new Bundle();
-
-		networkClient = new GlobalNetworkClient(this);
-        /*try {
-            comm = new ampacheCommunicator(prefs, this);
-            comm.perform_auth_request();
-            requestHandler = comm.new ampacheRequestHandler();
-            requestHandler.start();
-        } catch (Exception poo) {
-            
-        }*/
-
-        playbackControl = new GlobalMediaPlayerControl();
-		playbackControl.initService( getApplicationContext() );
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_layout);
     }
-}
 
+}

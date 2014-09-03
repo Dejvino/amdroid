@@ -33,7 +33,7 @@ import com.sound.ampache.service.PlayerServiceClient;
 
 public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
-	final static String LOG_TAG = "Amdroid_GlobalMediaPlayerControl";
+	final static String LOG_TAG = "Ampache_Amdroid_GlobalMediaPlayerControl";
 	public Boolean prepared = true;
 
 	// Playlist variables
@@ -308,8 +308,16 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 			return null;
 		}
 	}
-    
-    
+
+	public void setAuthToken(String authToken)
+	{
+		try {
+			serviceInterface().setAuthToken(authToken);
+		} catch ( RemoteException ex ) {
+			Log.e(LOG_TAG, "DeadObjectException", ex);
+		}
+	}
+
 	/*
 	* Listener Interfaces
 	*/
