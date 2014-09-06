@@ -2,6 +2,7 @@ package com.sound.ampache;
 
 /* Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
  * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
+ * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.content.Context;
+import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 

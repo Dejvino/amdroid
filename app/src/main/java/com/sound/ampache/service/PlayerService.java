@@ -1,6 +1,7 @@
 package com.sound.ampache.service;
 
 /* Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
+ * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -259,6 +260,8 @@ public class PlayerService extends Service
 	static final int MSG_STOP = 9;                // Sent if the media player stops playing
 	static final int MSG_VIDEO_SIZE_CHANGED = 10; // Sent if the video size changes
 	static final int MSG_PLAYLIST_CHANGED = 11;
+	static final int MSG_SERVICE_CONNECTED = 100;
+	static final int MSG_SERVICE_DISCONNECTED = 101;
 
 	// 1  - arg1 | getCurrentPosition - arg2 | 0
 	// 2  - arg1 | buffer percentage - arg2 | 0

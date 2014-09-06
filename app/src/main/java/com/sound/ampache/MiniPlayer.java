@@ -3,6 +3,7 @@ package com.sound.ampache;
 /* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
  * Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
  * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
+ * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -33,6 +34,8 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Messenger;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +46,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.sound.ampache.service.AbstractPlayerServiceStatusListener;
+import com.sound.ampache.service.PlayerServiceClient;
+
+/**
+ * Media player controls fragment.
+ */
 public final class MiniPlayer extends Fragment
 {
-    private ProgressBar         mProgress;
+	private static final String LOG_TAG = "Ampache_Amdroid_MiniPlayer";
+
+	private static int bufferingPercent = 0;
+
+	private ProgressBar         mProgress;
     private TextView            mEndTime, mCurrentTime;
     private boolean             mDragging;
     private ImageButton mPauseButton;
@@ -53,10 +66,14 @@ public final class MiniPlayer extends Fragment
     private ImageButton mPrevButton;
     private ImageButton mRepeatButton;
     private ImageButton mShuffleButton;
+
     private static final int    FADE_OUT = 1;
     private static final int    SHOW_PROGRESS = 2;
+
     StringBuilder               mFormatBuilder;
     Formatter                   mFormatter;
+
+	private PlaybackListener playbackListener = new PlaybackListener();
     
 	/*
 	 * Listener variables for our buttons defined in the layout. The listeners are bound to their
@@ -67,8 +84,6 @@ public final class MiniPlayer extends Fragment
 		public void onClick( View view )
 		{
 			amdroid.playbackControl.doPauseResume();
-			//updatePausePlay();
-			show();
 		}
 	};
 	
@@ -166,66 +181,6 @@ public final class MiniPlayer extends Fragment
 		}
 	};
 
-	/* 
-	 * Handler variable for handling messages to show playback progress 
-	 */	
-	private Handler mHandler = new Handler() {
-		@Override
-		public void handleMessage( Message msg )
-		{
-			int pos;
-			switch (msg.what) {
-			case SHOW_PROGRESS:
-				pos = setProgress();
-				if ( !mDragging && amdroid.playbackControl.isPlaying() )
-				{
-					msg = obtainMessage( SHOW_PROGRESS );
-					sendMessageDelayed( msg, 1000 - ( pos % 1000 ) );
-				}
-				break;
-			}
-		}
-	};
-	
-	/*
-	 * Completion, buffering and prepared listener that is bound to our mediaPlayer object
-	 */
-	private OnCompletionListener mCompletionListener = new OnCompletionListener() {
-		@Override
-		public void onCompletion( MediaPlayer mp )
-		{
-	        amdroid.playbackControl.nextInPlaylist();
-	        amdroid.playbackControl.play(); 
-		}
-		
-	};
-	
-	private OnBufferingUpdateListener mBufferingUpdateListener = new OnBufferingUpdateListener() {
-		@Override
-		public void onBufferingUpdate( MediaPlayer mp, int percent )
-		{
-			amdroid.bufferPC = percent;
-		}
-		
-	};
-	
-	private MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
-		public void onPrepared( MediaPlayer mp )
-		{
-			amdroid.playbackControl.start();
-			if ( amdroid.playListVisible )
-			{
-				// mc.setEnabled(true);
-				show();
-				amdroid.playbackControl.prepared = true;
-			}
-		}
-	};
-
-	public MiniPlayer()
-	{
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.mini_player, container, false);
@@ -235,11 +190,6 @@ public final class MiniPlayer extends Fragment
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
-
-		// TODO!!!
-    	//amdroid.mp.setOnCompletionListener( mCompletionListener );
-    	//amdroid.mp.setOnPreparedListener( mPreparedListener );
-    	//amdroid.mp.setOnBufferingUpdateListener( mBufferingUpdateListener );
 
     	// Bind listeners to our components
         mPauseButton = (ImageButton) view.findViewById(R.id.pause);
@@ -279,7 +229,7 @@ public final class MiniPlayer extends Fragment
 		*/
         }
 
-        mProgress = (ProgressBar) (SeekBar) view.findViewById(R.id.mediacontroller_progress);
+        mProgress = (SeekBar) view.findViewById(R.id.mediacontroller_progress);
         if (mProgress != null) {
             if (mProgress instanceof SeekBar) {
                 SeekBar seeker = (SeekBar) mProgress;
@@ -292,19 +242,18 @@ public final class MiniPlayer extends Fragment
         mCurrentTime = (TextView) view.findViewById(R.id.time_current);
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
-        //show(); // TODO!!
-    }
 
-    public void show() {
-        updatePausePlay();
-        mHandler.sendEmptyMessage(SHOW_PROGRESS);
-    }
+		amdroid.playbackControl.registerServiceStatusListener(playbackListener);
+	}
 
-    public void hide() {
-        mHandler.removeMessages(SHOW_PROGRESS);
-    }
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		amdroid.playbackControl.unregisterServiceStatusListener(playbackListener);
+	}
 
-    private String stringForTime(int timeMs) {
+	private String stringForTime(int timeMs) {
         int totalSeconds = timeMs / 1000;
 
         int seconds = totalSeconds % 60;
@@ -319,6 +268,11 @@ public final class MiniPlayer extends Fragment
         }
     }
 
+	/**
+	 * Reads the progress information from the player service and updates the corresponding UI elements.
+	 *
+	 * @return position (progress), returned from {@link GlobalMediaPlayerControl#getCurrentPosition()}.
+	 */
     private int setProgress() {
         if (mDragging) {
             return 0;
@@ -331,8 +285,7 @@ public final class MiniPlayer extends Fragment
                 long pos = 1000L * position / duration;
                 mProgress.setProgress( (int) pos);
             }
-            int percent = amdroid.bufferPC;
-            mProgress.setSecondaryProgress(percent * 10);
+            mProgress.setSecondaryProgress(bufferingPercent * 10);
         }
 
         if (mEndTime != null)
@@ -358,5 +311,80 @@ public final class MiniPlayer extends Fragment
 	private Context getContext()
 	{
 		return getActivity();
+	}
+
+	/**
+	 * Handles messages from the player service.
+	 *
+	 * Contains periodic song progress updater.
+	 */
+	private class PlaybackListener extends AbstractPlayerServiceStatusListener
+	{
+		@Override
+		public void handleMessage(Message msg)
+		{
+			super.handleMessage(msg);
+
+			if (msg.what == SHOW_PROGRESS) {
+				updateProgress();
+			}
+		}
+
+		@Override
+		public void onPlay()
+		{
+			updateProgress();
+		}
+
+		@Override
+		public void onPause()
+		{
+			updateProgress();
+		}
+
+		@Override
+		public void onStop()
+		{
+			updateProgress();
+		}
+
+		@Override
+		public void onSeek(int position)
+		{
+			setProgress();
+		}
+
+		@Override
+		public void onBuffering(int buffer)
+		{
+			bufferingPercent = buffer;
+			updateProgress();
+		}
+
+		// TODO: add to interface
+		public void onBufferingCompleted()
+		{
+			amdroid.playbackControl.nextInPlaylist();
+			amdroid.playbackControl.play();
+		}
+
+		private void updateProgress()
+		{
+			setProgress();
+			cancelProgressUpdate();
+			if (amdroid.playbackControl.isPlaying()) {
+				scheduleProgressUpdate();
+			}
+		}
+
+		private void scheduleProgressUpdate()
+		{
+			sendEmptyMessageDelayed(SHOW_PROGRESS, 500);
+		}
+
+		private void cancelProgressUpdate()
+		{
+			removeMessages(SHOW_PROGRESS);
+		}
 	}
 }

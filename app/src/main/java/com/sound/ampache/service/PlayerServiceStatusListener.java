@@ -1,9 +1,6 @@
-package com.sound.ampache;
+package com.sound.ampache.service;
 
-/* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
- * Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
- * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
- * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
+/* Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -23,34 +20,25 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import android.app.Application;
-import android.os.Bundle;
-
-public final class amdroid extends Application
+/**
+* Description: PlayerService status update listener.
+*
+* @author Dejvino
+* @since 2014-09-06
+*/
+public interface PlayerServiceStatusListener
 {
-    public static Boolean playListVisible;
-    public static Boolean confChanged;
-
-    protected static Bundle cache;
-    public static GlobalMediaPlayerControl playbackControl;
-
-	public static GlobalNetworkClient networkClient;
-    
-	// This variable should be set to true once the mediaplayer object has been initialized. I.e. a
-	// data source has been set and is prepared. 
-	public static boolean mediaplayerInitialized = false;
-
-	@Override
-    public void onCreate()
-	{
-		super.onCreate();
-
-        cache = new Bundle();
-
-		networkClient = new GlobalNetworkClient(this);
-
-        playbackControl = new GlobalMediaPlayerControl();
-		playbackControl.initService( getApplicationContext() );
-    }
+	void onServiceConnected();
+	void onServiceDisconnected();
+	void onSeek(int position);
+	void onBuffering(int buffer);
+	void onNewMedia();
+	void onPlaylistIndexChanged(int index);
+	void onShuffledChanged(int enabled);
+	void onRepeatChanged(int enabled);
+	void onPlay();
+	void onPause();
+	void onStop();
+	void onVideoSizeChanged(int width, int height);
+	void onPlaylistChanged(int size);
 }
-

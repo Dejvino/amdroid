@@ -41,7 +41,6 @@ public class PreferencesFragment extends PreferenceFragment {
 
 		// we want to tell other activities that we need to reload
         amdroid.confChanged = true;
-        amdroid.comm.authToken = null;
     }
 }
 

@@ -1,9 +1,6 @@
-package com.sound.ampache;
+package com.sound.ampache.service;
 
-/* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
- * Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
- * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
- * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
+/* Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -23,34 +20,94 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import android.app.Application;
-import android.os.Bundle;
+import android.os.Handler;
+import android.os.Messenger;
 
-public final class amdroid extends Application
+/**
+ * Description: Convenience method for implementing the PlayerServiceStatusListener interface.
+ *
+ * @author Dejvino
+ * @since 2014-09-06
+ */
+public abstract class AbstractPlayerServiceStatusListener extends Handler implements PlayerServiceStatusListener
 {
-    public static Boolean playListVisible;
-    public static Boolean confChanged;
-
-    protected static Bundle cache;
-    public static GlobalMediaPlayerControl playbackControl;
-
-	public static GlobalNetworkClient networkClient;
-    
-	// This variable should be set to true once the mediaplayer object has been initialized. I.e. a
-	// data source has been set and is prepared. 
-	public static boolean mediaplayerInitialized = false;
+	protected final Messenger messenger = new Messenger(this);
 
 	@Override
-    public void onCreate()
+	public void onServiceConnected()
 	{
-		super.onCreate();
 
-        cache = new Bundle();
+	}
 
-		networkClient = new GlobalNetworkClient(this);
+	@Override
+	public void onServiceDisconnected()
+	{
 
-        playbackControl = new GlobalMediaPlayerControl();
-		playbackControl.initService( getApplicationContext() );
-    }
+	}
+
+	@Override
+	public void onSeek(int position)
+	{
+
+	}
+
+	@Override
+	public void onBuffering(int buffer)
+	{
+
+	}
+
+	@Override
+	public void onNewMedia()
+	{
+
+	}
+
+	@Override
+	public void onPlaylistIndexChanged(int index)
+	{
+
+	}
+
+	@Override
+	public void onShuffledChanged(int enabled)
+	{
+
+	}
+
+	@Override
+	public void onRepeatChanged(int enabled)
+	{
+
+	}
+
+	@Override
+	public void onPlay()
+	{
+
+	}
+
+	@Override
+	public void onPause()
+	{
+
+	}
+
+	@Override
+	public void onStop()
+	{
+
+	}
+
+	@Override
+	public void onVideoSizeChanged(int width, int height)
+	{
+
+	}
+
+	@Override
+	public void onPlaylistChanged(int size)
+	{
+
+	}
 }
-
