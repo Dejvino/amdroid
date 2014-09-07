@@ -3,6 +3,8 @@ Amdroid
 
 Ampache client for Android. Allows streaming music from any Ampache server.
 
+![](https://raw.githubusercontent.com/Dejvino/amdroid/master/screenshot_01.png)
+
 ## History
 This is a fork of the official "amdroid-h" repo.
 Since there was no activity around this project in any way since 2010,
