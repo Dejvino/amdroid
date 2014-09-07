@@ -18,6 +18,14 @@
             android:id="@+id/mainMenu"
             tools:layout="@layout/main_menu_layout"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Playlist"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal"/>
+
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center_vertical"
-        android:background="#444">
+        android:background="#ff3c3c3c">
 
         <TextView
             android:layout_width="wrap_content"

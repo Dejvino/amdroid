@@ -68,15 +68,17 @@ public class Player {
 	private String authToken;
 
 	public interface PlayerListener {
-		abstract public void onTogglePlaying( boolean playing );
-		abstract public void onPlayerStopped();
+		void onTogglePlaying( boolean playing );
+		void onPlayerStopped();
 
-		abstract public void onNewMediaPlaying( Media media );
+		void onNewMediaPlaying( Media media );
 
-		abstract public void onVideoSizeChanged( int width, int height );
+		void onVideoSizeChanged( int width, int height );
 
-		abstract public void onBuffering( int buffer );
-		abstract public void onSeek( int position );
+		void onBuffering( int buffer );
+		void onSeek( int position );
+
+		void onError(int what, int extra);
 	}
 
 	public Player( Context context, Playlist playlist ) {
@@ -341,6 +343,9 @@ public class Player {
 
 		public boolean onError( MediaPlayer mp, int what, int extra ) {
 			Log.e( TAG, "Player error (" + what + ", " + extra + ")" );
+			for ( PlayerListener obj : mPlayerListeners ) {
+				obj.onError(what, extra);
+			}
 			return true;
 		}
 

@@ -41,4 +41,5 @@ public interface PlayerServiceStatusListener
 	void onStop();
 	void onVideoSizeChanged(int width, int height);
 	void onPlaylistChanged(int size);
+	void onError(int what, int extra);
 }

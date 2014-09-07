@@ -50,10 +50,11 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 		GlobalMediaPlayerControl.PlayingIndexListener,
 		GlobalMediaPlayerControl.PlaylistCurrentListener
 {
+	private View empty;
     private ListView lv;
     private ImageView artView;
 
-    private playlistAdapter pla;
+    private PlaylistAdapter pla;
 
     private Boolean albumArtEnabled = false;
 	private PlaybackListener playbackListener = new PlaybackListener();
@@ -69,10 +70,11 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 	{
 		super.onViewCreated(view, savedInstanceState);
 
+		empty = view.findViewById(android.R.id.empty);
         lv = (ListView) view.findViewById(R.id.list);
         lv.setOnItemClickListener(this);
 
-        pla = new playlistAdapter(getActivity());
+        pla = new PlaylistAdapter(getActivity());
         lv.setAdapter(pla);
         
         // register our adapter to be called when a change to the currentPlaylist ocurrs  
@@ -90,8 +92,6 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 
         // Center the playlist at the current song
         centerList( 0 );
-
-		amdroid.networkClient.auth();
     }
 
 	@Override
@@ -243,13 +243,14 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
     {
 		int playlistIndex = amdroid.playbackControl.getPlayingIndex();
         lv.setSelection(playlistIndex + adjust );
+		refreshEmptyView();
     }
 
-    private class playlistAdapter extends BaseAdapter
+    private class PlaylistAdapter extends BaseAdapter
     {
         private LayoutInflater mInflater;
 
-        public playlistAdapter(Context context) {
+        public PlaylistAdapter(Context context) {
             mInflater = LayoutInflater.from(context);
         }
 
@@ -274,7 +275,13 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
             notifyDataSetChanged();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+		@Override
+		public boolean isEmpty()
+		{
+			return getCount() <= 0;
+		}
+
+		public View getView(int position, View convertView, ViewGroup parent) {
             plI holder;
             Media cur = amdroid.playbackControl.getPlaylistCurrent().get(position);
 
@@ -329,10 +336,20 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
         loadAlbumArt();
 	}
 
-    @Override
+	private void refreshEmptyView()
+	{
+		if (pla.isEmpty()) {
+			empty.setVisibility(View.VISIBLE);
+		} else {
+			empty.setVisibility(View.GONE);
+		}
+	}
+
+	@Override
 	public void onPlaylistCurrentChange()
 	{
 		pla.notifyDataSetChanged();
+		refreshEmptyView();
 	}
 
 	private class PlaybackListener extends AbstractPlayerServiceStatusListener

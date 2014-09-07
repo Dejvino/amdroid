@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.sound.ampache.objects.Directive;
+import com.sound.ampache.objects.Media;
 import com.sound.ampache.objects.Song;
 import com.sound.ampache.objects.ampacheObject;
 
@@ -113,7 +114,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 			mDataHandler.enqueMessage( DataHandler.ENQUEUE_SONG, new Directive(cur.allChildren()), 0, false );
 		} else
 		{
-			amdroid.playbackControl.addPlaylistCurrent( (Song)cur );
+			amdroid.playbackControl.addPlaylistCurrent((Media) cur);
 		}
 		return true;
 	}

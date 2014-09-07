@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="fill_parent"
-              android:layout_height="48dip" >
+              android:layout_height="wrap_content"
+              android:background="@drawable/bg_playlist_entry" >
 
     <ImageView android:id="@+id/art"   
                android:layout_width="24dip"
@@ -14,20 +15,22 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="48dip">
+        android:layout_height="wrap_content">
 
         <TextView android:id="@+id/title" 
                   android:singleLine="true"
                   android:textSize="16sp"
                   android:textStyle="bold"
                   android:layout_width="fill_parent"
-                  android:layout_height="wrap_content" />
+                  android:layout_height="wrap_content"
+                  android:text="Song title"/>
 
         <TextView android:id="@+id/other"
                   android:singleLine="true"
                   android:textSize="12sp"
                   android:layout_width="fill_parent"
-                  android:layout_height="wrap_content" />
+                  android:layout_height="wrap_content"
+                  android:text="Artist - Album"/>
 
 
     </LinearLayout>

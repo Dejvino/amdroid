@@ -110,4 +110,10 @@ public abstract class AbstractPlayerServiceStatusListener extends Handler implem
 	{
 
 	}
+
+	@Override
+	public void onError(int what, int extra)
+	{
+
+	}
 }

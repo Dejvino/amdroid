@@ -206,28 +206,29 @@ public final class MiniPlayer extends Fragment
         if (mPrevButton != null) {
             mPrevButton.setOnClickListener(mPrevListener);
         }
-        
-        mRepeatButton = (ImageButton) view.findViewById(R.id.repeat);
-        if (mRepeatButton != null) {
-			mRepeatButton.setOnClickListener( mRepeatListener );
-			/* TODO!!
-			if ( amdroid.playbackControl.repeatEnabled() )
-				mRepeatButton.setImageResource( R.drawable.ic_menu_revert );
-			else
-				mRepeatButton.setImageResource( R.drawable.ic_menu_revert_disabled );
-			*/
-		}
-        
-        mShuffleButton = (ImageButton) view.findViewById(R.id.shuffle);
-        if (mShuffleButton != null) {
-            mShuffleButton.setOnClickListener(mShuffleListener);
-		/* TODO!!
-            if ( amdroid.playbackControl.shuffleEnabled() )
-            	mShuffleButton.setImageResource( R.drawable.ic_menu_shuffle );
-            else
-            	mShuffleButton.setImageResource( R.drawable.ic_menu_shuffle_disabled );
-		*/
-        }
+
+		// TODO: move to playlist
+//        mRepeatButton = (ImageButton) view.findViewById(R.id.repeat);
+//        if (mRepeatButton != null) {
+//			mRepeatButton.setOnClickListener( mRepeatListener );
+//			/* TODO!!
+//			if ( amdroid.playbackControl.repeatEnabled() )
+//				mRepeatButton.setImageResource( R.drawable.ic_menu_revert );
+//			else
+//				mRepeatButton.setImageResource( R.drawable.ic_menu_revert_disabled );
+//			*/
+//		}
+//
+//        mShuffleButton = (ImageButton) view.findViewById(R.id.shuffle);
+//        if (mShuffleButton != null) {
+//            mShuffleButton.setOnClickListener(mShuffleListener);
+//		/* TODO!!
+//            if ( amdroid.playbackControl.shuffleEnabled() )
+//            	mShuffleButton.setImageResource( R.drawable.ic_menu_shuffle );
+//            else
+//            	mShuffleButton.setImageResource( R.drawable.ic_menu_shuffle_disabled );
+//		*/
+//        }
 
         mProgress = (SeekBar) view.findViewById(R.id.mediacontroller_progress);
         if (mProgress != null) {
@@ -359,6 +360,15 @@ public final class MiniPlayer extends Fragment
 		{
 			bufferingPercent = buffer;
 			updateProgress();
+		}
+
+		@Override
+		public void onError(int what, int extra)
+		{
+			Context ctx = getActivity();
+			if (ctx != null) {
+				Toast.makeText(ctx, "Media player error (" + what + ", " + extra + ")", Toast.LENGTH_SHORT).show();
+			}
 		}
 
 		// TODO: add to interface

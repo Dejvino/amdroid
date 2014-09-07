@@ -263,6 +263,7 @@ public class PlayerService extends Service
 	static final int MSG_PLAYLIST_CHANGED = 11;
 	static final int MSG_SERVICE_CONNECTED = 100;
 	static final int MSG_SERVICE_DISCONNECTED = 101;
+	static final int MSG_ERROR = 200;
 
 	// 1  - arg1 | getCurrentPosition - arg2 | 0
 	// 2  - arg1 | buffer percentage - arg2 | 0
@@ -331,6 +332,12 @@ public class PlayerService extends Service
 
 		public void onSeek( int position ) {
 			sendMessage( MSG_SEEK_POSITION, position );
+		}
+
+		@Override
+		public void onError(int what, int extra)
+		{
+			sendMessage(MSG_ERROR, what, extra);
 		}
 	}
 

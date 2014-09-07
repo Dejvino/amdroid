@@ -219,6 +219,10 @@ public class PlayerServiceClient {
 					Log.d(LOG_TAG, "MSG_SERVICE_CONNECTED.");
 					break;
 
+				case PlayerService.MSG_ERROR:
+					Log.d(LOG_TAG, "MSG_ERROR | What: " + msg.arg1 + " | Extra: " + msg.arg2);
+					break;
+
 				default:
 					super.handleMessage(msg);
 					break;
@@ -277,6 +281,10 @@ public class PlayerServiceClient {
 
 					case PlayerService.MSG_SERVICE_DISCONNECTED:
 						listener.onServiceDisconnected();
+						break;
+
+					case PlayerService.MSG_ERROR:
+						listener.onError(msg.arg1, msg.arg2);
 						break;
 				}
 			}
