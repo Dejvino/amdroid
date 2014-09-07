@@ -36,6 +36,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.sound.ampache.MainActivity;
 import com.sound.ampache.PlaylistFragment;
 import com.sound.ampache.objects.*;
 import com.sound.ampache.utility.Player;
@@ -354,7 +355,7 @@ public class PlayerService extends Service
 		CharSequence tickerText = "Amdroid - " + mediaName;              
 		long when = System.currentTimeMillis();        
 
-		Intent notificationIntent = new Intent(this, PlaylistFragment.class);
+		Intent notificationIntent = new Intent(this, MainActivity.class);
 		PendingIntent mediaIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 		// TODO: upgrade
 		Notification notification = new Notification(icon, tickerText, when);

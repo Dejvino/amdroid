@@ -31,6 +31,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.sound.ampache.objects.Media;
+import com.sound.ampache.service.IPlayerService;
 import com.sound.ampache.service.PlayerServiceClient;
 
 public class GlobalMediaPlayerControl extends PlayerServiceClient {
@@ -47,168 +48,212 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 		amdroid.playListVisible = true;
 	}
 
-	public int getCurrentPosition() {
-		try {
-			return serviceInterface().getCurrentPosition();
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return -1;
-		}
-	}
-
-	public int getDuration() {
-		try {
-			return serviceInterface().getDuration();
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return -1;
-		}
-	}
-
-	public int getBuffer() {
-		try {
-			return serviceInterface().getBuffer();
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return -1;
-		}
-	}
-
-	public boolean isPlaying() {
-		try {
-			return serviceInterface().isPlaying();
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return false;
-		}
-	}
-
-	public void pause() {
-		try {
-			if ( isPlaying() )
-				serviceInterface().playPause();
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
-		}
-	}
-
-	public void seekTo( int pos ) {
-		try {
-			serviceInterface().seek( pos );
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
-		}
-	}
-
-	public void start()
+	public int getCurrentPosition()
 	{
-		play();
-	}
-
-	public void playMedia( Media media ) {
 		try {
-			serviceInterface().playMedia( media );
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				return service.getCurrentPosition();
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
+		}
+		return -1;
+	}
+
+	public int getDuration()
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				return service.getDuration();
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
+		}
+		return -1;
+	}
+
+	public int getBuffer()
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				return service.getBuffer();
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
+		}
+		return -1;
+	}
+
+	public boolean isPlaying()
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				return service.isPlaying();
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
+		}
+		return false;
+	}
+
+	public void pause()
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				if (service.isPlaying()) {
+					service.playPause();
+				}
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
+		}
+	}
+
+	public void seekTo( int pos )
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.seek(pos);
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
+		}
+	}
+
+	public void playMedia( Media media )
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.playMedia(media);
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
 		}
 	}
 
 	public void play() {
-		// set to show that our mediaplayer has been initialized. 
-		amdroid.mediaplayerInitialized = true;
-
 		try {
-			playMedia( serviceInterface().getCurrentMedia() );
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.playMedia(service.getCurrentMedia());
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
 		}
 	}
 
-	public void stop() {
+	public void stop()
+	{
 		try {
-			serviceInterface().stop();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.stop();
+			}
 		}
 		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
+			Log.e(LOG_TAG, "DeadObjectException", ex);
 		}
 	}
     
-	public void doPauseResume() {
+	public void doPauseResume()
+	{
 		try {
-			serviceInterface().playPause();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.playPause();
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
 		}
 	}
    
-	public void nextInPlaylist() {
+	public void nextInPlaylist()
+	{
 		try {
-			serviceInterface().next();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.next();
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
 		}
 	}
 
-	public void prevInPlaylist() {
+	public void prevInPlaylist()
+	{
 		try {
-			serviceInterface().prev();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.prev();
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
 		}
 	}
-    
-	// Functions used to modify playingIndex and notify about changes
-	public void setPlayingIndex( int i ) {
+
+	public void setPlayingIndex(int i)
+	{
 		try {
-			serviceInterface().setCurrentIndex( i );
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.setCurrentIndex(i);
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
 			return;
 		}
 
+		// TODO: remove, change to com.sound.ampache.service.PlayerServiceStatusListener
 		// GUI Trigger
 		if ( playingIndexListener != null )
 			playingIndexListener.onPlayingIndexChange();
 	}
     
-	public int getPlayingIndex() {
+	public int getPlayingIndex()
+	{
 		try {
-			return serviceInterface().getCurrentIndex();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				return service.getCurrentIndex();
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return -1;
 		}
+		return -1;
 	}
 
-	public int getPlaylistSize() {
+	public int getPlaylistSize()
+	{
 		try {
-			return serviceInterface().getPlaylistSize();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				return service.getPlaylistSize();
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return -1;
 		}
+		return -1;
 	}
     
 	public void setPlayingIndexListener( PlayingIndexListener listener ) {
@@ -219,35 +264,15 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 	public void setPlaylistCurrentListener( PlaylistCurrentListener listener ) {
 		playlistCurrentListener = listener;
 	}
-	public void addAllPlaylistCurrent( ArrayList<Media> mediaList ) {
+
+	public void addAllPlaylistCurrent( ArrayList<Media> mediaList )
+	{
 		try
 		{
-			serviceInterface().enqueue( (Media[])mediaList.toArray( new Media[0] ) );
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
-		}
-
-		if ( playlistCurrentListener != null )
-			playlistCurrentListener.onPlaylistCurrentChange();
-	}
-	public void addPlaylistCurrent( Media media ) {
-		try {
-			serviceInterface().add( media );
-		}
-		catch ( RemoteException ex ) {
-			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
-		}
-
-		if ( playlistCurrentListener != null )
-			playlistCurrentListener.onPlaylistCurrentChange();
-	}
-	public void clearPlaylistCurrent() {
-		try {
-			serviceInterface().clearPlaylist();
-			serviceInterface().clearShuffleHistory();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.enqueue((Media[]) mediaList.toArray(new Media[0]));
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
@@ -258,14 +283,53 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 			playlistCurrentListener.onPlaylistCurrentChange();
 	}
 
-	public boolean shuffleEnabled() {
+	public void addPlaylistCurrent( Media media )
+	{
 		try {
-			return serviceInterface().getShufflePlay();
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.add(media);
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return false;
+			return;
 		}
+
+		if ( playlistCurrentListener != null )
+			playlistCurrentListener.onPlaylistCurrentChange();
+	}
+
+	public void clearPlaylistCurrent()
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.clearPlaylist();
+				service.clearShuffleHistory();
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
+			return;
+		}
+
+		if ( playlistCurrentListener != null )
+			playlistCurrentListener.onPlaylistCurrentChange();
+	}
+
+	public boolean shuffleEnabled()
+	{
+		try {
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				return service.getShufflePlay();
+			}
+		}
+		catch ( RemoteException ex ) {
+			Log.e( LOG_TAG, "DeadObjectException",ex );
+		}
+		return false;
 	}
 
 	public boolean repeatEnabled() {
@@ -278,43 +342,58 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 		}
 	}
 
-	public void setShuffle( boolean randomize ) {
+	public void setShuffle( boolean randomize )
+	{
 		try {
-			serviceInterface().setShufflePlay( randomize );
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.setShufflePlay(randomize);
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
 		}
 	}
 
-	public void setRepeat( boolean loop ) {
+	public void setRepeat( boolean loop )
+	{
 		try {
-			serviceInterface().setRepeatPlay( loop );
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.setRepeatPlay(loop);
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return;
 		}
 	}
 
 	/*
 	 * The returned object is a copy of the playlist used in the service. 
 	 */
-	public ArrayList<Media> getPlaylistCurrent(){
+	public ArrayList<Media> getPlaylistCurrent()
+	{
 		try {
-			return new ArrayList( Arrays.asList( serviceInterface().currentPlaylist() ) );
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				if (service.currentPlaylist() != null) {
+					return new ArrayList<Media>(Arrays.asList(service.currentPlaylist()));
+				}
+			}
 		}
 		catch ( RemoteException ex ) {
 			Log.e( LOG_TAG, "DeadObjectException",ex );
-			return null;
 		}
+		return new ArrayList<Media>();
 	}
 
 	public void setAuthToken(String authToken)
 	{
 		try {
-			serviceInterface().setAuthToken(authToken);
+			IPlayerService service = serviceInterface();
+			if (service != null) {
+				service.setAuthToken(authToken);
+			}
 		} catch ( RemoteException ex ) {
 			Log.e(LOG_TAG, "DeadObjectException", ex);
 		}

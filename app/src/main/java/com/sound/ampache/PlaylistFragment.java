@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.sound.ampache.objects.Media;
 import com.sound.ampache.objects.Song;
+import com.sound.ampache.service.AbstractPlayerServiceStatusListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +56,7 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
     private playlistAdapter pla;
 
     private Boolean albumArtEnabled = false;
+	private PlaybackListener playbackListener = new PlaybackListener();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -92,7 +94,21 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 		amdroid.networkClient.auth();
     }
 
-    /*@Override
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		amdroid.playbackControl.registerServiceStatusListener(playbackListener);
+	}
+
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		amdroid.playbackControl.unregisterServiceStatusListener(playbackListener);
+	}
+
+	/*@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
@@ -223,9 +239,10 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
     }
 
 
-    private void centerList ( int adjust )
+    private void centerList (int adjust)
     {
-            lv.setSelection( amdroid.playbackControl.getPlayingIndex() + adjust );
+		int playlistIndex = amdroid.playbackControl.getPlayingIndex();
+        lv.setSelection(playlistIndex + adjust );
     }
 
     private class playlistAdapter extends BaseAdapter
@@ -318,5 +335,29 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 		pla.notifyDataSetChanged();
 	}
 
+	private class PlaybackListener extends AbstractPlayerServiceStatusListener
+	{
+		@Override
+		public void onNewMedia()
+		{
+			updatePlaylist();
+		}
 
+		@Override
+		public void onPlaylistIndexChanged(int index)
+		{
+			updatePlaylist();
+		}
+
+		@Override
+		public void onPlaylistChanged(int size)
+		{
+			updatePlaylist();
+		}
+
+		private void updatePlaylist()
+		{
+			onPlayingIndexChange();
+		}
+	}
 }
