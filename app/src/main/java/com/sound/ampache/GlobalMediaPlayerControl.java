@@ -33,10 +33,13 @@ import android.util.Log;
 import com.sound.ampache.objects.Media;
 import com.sound.ampache.service.IPlayerService;
 import com.sound.ampache.service.PlayerServiceClient;
+import com.sound.ampache.utility.UserLogEntryFactory;
 
 public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
-	final static String LOG_TAG = "Ampache_Amdroid_GlobalMediaPlayerControl";
+	private final static String LOG_TAG = "Ampache_Amdroid_GlobalMediaPlayerControl";
+	private static final String PLAYER_PREFIX = "[Player] ";
+
 	public Boolean prepared = true;
 
 	// Playlist variables
@@ -106,6 +109,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void pause()
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Pause");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -134,6 +138,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void playMedia( Media media )
 	{
+		amdroid.logger.log(UserLogEntryFactory.create(PLAYER_PREFIX + "Play media", media));
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -145,7 +150,9 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 		}
 	}
 
-	public void play() {
+	public void play()
+	{
+		amdroid.logger.log(PLAYER_PREFIX + "Play");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -159,6 +166,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void stop()
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Stop");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -172,6 +180,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
     
 	public void doPauseResume()
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Pause/Resume");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -185,6 +194,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
    
 	public void nextInPlaylist()
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Next");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -198,6 +208,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void prevInPlaylist()
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Previous");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -267,6 +278,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void addAllPlaylistCurrent( ArrayList<Media> mediaList )
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Add list of media", mediaList.toString());
 		try
 		{
 			IPlayerService service = serviceInterface();
@@ -285,6 +297,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void addPlaylistCurrent( Media media )
 	{
+		amdroid.logger.log(UserLogEntryFactory.create(PLAYER_PREFIX + "Add media", media));
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -302,6 +315,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void clearPlaylistCurrent()
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Clear playlist");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -320,6 +334,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public boolean shuffleEnabled()
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Shuffle");
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -332,7 +347,9 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 		return false;
 	}
 
-	public boolean repeatEnabled() {
+	public boolean repeatEnabled()
+	{
+		amdroid.logger.log(PLAYER_PREFIX + "Repeat");
 		try {
 			return serviceInterface().getRepeatPlay();
 		}
@@ -344,6 +361,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void setShuffle( boolean randomize )
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Shuffle " + randomize);
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -357,6 +375,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void setRepeat( boolean loop )
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Repeat " + loop);
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {
@@ -389,6 +408,7 @@ public class GlobalMediaPlayerControl extends PlayerServiceClient {
 
 	public void setAuthToken(String authToken)
 	{
+		amdroid.logger.log(PLAYER_PREFIX + "Setting AUTH token", "New token: " + authToken);
 		try {
 			IPlayerService service = serviceInterface();
 			if (service != null) {

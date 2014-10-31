@@ -7,46 +7,75 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <ImageButton android:id="@+id/goto_home"
-            android:src="@drawable/ic_menu_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="2"
-            android:layout_weight="1"
-            android:background="@drawable/btn_menu"
-            style="@style/btn_menu"/>
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/horizontalScrollView"
+        android:layout_weight="1">
 
-        <ImageButton android:id="@+id/goto_music"
-			android:src="@drawable/ic_btn_speak_now"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_column="4"
-            android:background="@drawable/btn_menu"
-            android:layout_weight="1"
-            style="@style/btn_menu"/>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <ImageButton android:id="@+id/goto_home"
+                android:src="@drawable/ic_menu_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_weight="1"
+                android:background="@drawable/btn_menu"
+                style="@style/btn_menu"/>
 
-        <ImageButton android:id="@+id/goto_playlists"
-			android:src="@drawable/ic_menu_sort_by_size"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_column="6"
-            android:background="@drawable/btn_menu"
-            android:layout_weight="1"/>
+            <ImageButton android:id="@+id/goto_music"
+                android:src="@drawable/ic_btn_speak_now"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="4"
+                android:background="@drawable/btn_menu"
+                android:layout_weight="1"
+                style="@style/btn_menu"/>
 
-        <ImageButton android:id="@+id/goto_playing"
-			android:src="@drawable/ic_menu_play_clip"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_column="8"
-            android:background="@drawable/btn_menu"
-            android:layout_weight="1"/>
+            <ImageButton android:id="@+id/goto_playlists"
+                android:src="@drawable/ic_menu_sort_by_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="6"
+                android:background="@drawable/btn_menu"
+                android:layout_weight="1"/>
 
-        <ImageButton android:id="@+id/goto_search"
-			android:src="@drawable/ic_search_category_default"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_column="10"
-            android:background="@drawable/btn_menu"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            <ImageButton android:id="@+id/goto_playing"
+                android:src="@drawable/ic_menu_play_clip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="8"
+                android:background="@drawable/btn_menu"
+                android:layout_weight="1"/>
+
+            <ImageButton android:id="@+id/goto_search"
+                android:src="@drawable/ic_search_category_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="10"
+                android:background="@drawable/btn_menu"
+                android:layout_weight="1"/>
+
+            <ImageButton android:id="@+id/goto_preferences"
+                android:src="@drawable/ic_btn_speak_now"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="10"
+                android:background="@drawable/btn_menu"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <ImageButton android:id="@+id/goto_logs"
+        android:src="@drawable/ic_menu_play_clip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="10"
+        android:background="@drawable/btn_menu"
+        android:layout_weight="1"/>
+
+</LinearLayout>
 

@@ -44,6 +44,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
     public static final String GOTO_SEARCH = "goto_search";
     public static final String GOTO_PLAYING = "goto_playing";
 	public static final String GOTO_PREFS = "goto_prefs";
+	public static final String GOTO_LOGS = "goto_logs";
 
     private MiniPlayer miniPlayer;
 
@@ -71,6 +72,10 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
         b.setOnClickListener(this);
         b = (ImageButton)view.findViewById(R.id.goto_search);
         b.setOnClickListener(this);
+		b = (ImageButton)view.findViewById(R.id.goto_preferences);
+		b.setOnClickListener(this);
+		b = (ImageButton)view.findViewById(R.id.goto_logs);
+		b.setOnClickListener(this);
 
 		setActivity(GOTO_HOME);
     }
@@ -99,6 +104,14 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
                 setActivity(GOTO_SEARCH);
                 break;
 
+	        case (R.id.goto_preferences):
+		        setActivity(GOTO_PREFS);
+		        break;
+
+	        case (R.id.goto_logs):
+		        setActivity(GOTO_LOGS);
+		        break;
+
             default:
                 break;
         }
@@ -120,6 +133,8 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 			newFragment = new SearchFragment();
 		} else if (GOTO_PREFS.equals(id)) {
 			newFragment = new PreferencesFragment();
+		} else if (GOTO_LOGS.equals(id)) {
+			newFragment = new LogsFragment();
 		} else {
 			throw new RuntimeException("Unknown activity: " + id);
 		}

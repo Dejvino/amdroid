@@ -1,9 +1,6 @@
-package com.sound.ampache;
+package com.sound.ampache.utility;
 
-/* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
- * Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
- * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
- * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
+/* Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
  * +------------------------------------------------------------------------+
  * | This program is free software; you can redistribute it and/or          |
@@ -23,41 +20,24 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import android.app.Application;
-import android.os.Bundle;
+import com.sound.ampache.objects.Media;
+import com.sound.ampache.objects.UserLogEntry;
 
-import com.sound.ampache.utility.UserLogger;
-
-public final class amdroid extends Application
+/**
+ * Log entry factory.
+ */
+public class UserLogEntryFactory
 {
-    public static Boolean playListVisible;
-    public static Boolean confChanged;
+    public static UserLogEntry create(String title, Media media)
+    {
+        return new UserLogEntry(title, describe(media));
+    }
 
-    protected static Bundle cache;
-    public static GlobalMediaPlayerControl playbackControl;
-
-	public static GlobalNetworkClient networkClient;
-
-    public static UserLogger logger;
-    
-	// This variable should be set to true once the mediaplayer object has been initialized. I.e. a
-	// data source has been set and is prepared. 
-	public static boolean mediaplayerInitialized = false;
-
-	@Override
-    public void onCreate()
-	{
-		super.onCreate();
-
-        logger = new UserLogger();
-        cache = new Bundle();
-
-		networkClient = new GlobalNetworkClient(this);
-
-        playbackControl = new GlobalMediaPlayerControl();
-		playbackControl.initService( getApplicationContext() );
-
-		logger.log("Application started");
+    public static String describe(Media media)
+    {
+        if (media == null) {
+            return "No media";
+        }
+        return media.getType() + " @ " + media.getLiveUrl("TOKEN");
     }
 }
-

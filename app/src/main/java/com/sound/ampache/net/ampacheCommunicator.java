@@ -26,6 +26,8 @@ import java.io.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.ArrayList;
+
+import com.sound.ampache.amdroid;
 import com.sound.ampache.objects.*;
 
 import android.content.SharedPreferences;
@@ -66,16 +68,21 @@ public class ampacheCommunicator
         dataHandler hand = new dataHandler();
         reader.setContentHandler(hand);
         try {
-            reader.parse(new InputSource(fetchFromServer("auth=" + this.authToken)));
-            if (hand.errorCode == 401) {
-                this.perform_auth_request();
-            }
-        } catch (Exception e) {
+			reader.parse(new InputSource(fetchFromServer("auth=" + this.authToken)));
+			if (hand.errorCode == 401) {
+				this.perform_auth_request();
+			}
+		} catch (MalformedURLException e) {
+			Log.e(LOG_TAG, "Operation PING failed due to invalid URL: " + e.getMessage(), e);
+			amdroid.logger.log("Server PING failed", e.getLocalizedMessage());
+		} catch (Exception e) {
 			Log.e(LOG_TAG, "Operation PING failed: " + e.getMessage(), e);
+			amdroid.logger.log("Server PING failed", "Error details: " + e.toString());
         }
     }
 
-    public void perform_auth_request() throws Exception {
+    public void perform_auth_request() throws Exception
+    {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         /* Get the current time, and convert it to a string */
         String time = Long.toString((new Date()).getTime() / 1000);
@@ -101,11 +108,15 @@ public class ampacheCommunicator
             reader.parse(new InputSource(fetchFromServer("action=handshake&auth="+hash+"&timestamp="+time+"&version=350001&user="+user)));
         } catch (Exception e) {
 			Log.e(LOG_TAG, "Operation AUTH failed: " + e.getMessage(), e);
+			amdroid.logger.log("Server AUTH failed", "Error Details: " + e.toString());
             lastErr = "Could not connect to server";
         }
 
         if (hand.errorCode != 0) {
             lastErr = hand.error;
+			amdroid.logger.log("Server AUTH failed", "Error: " + lastErr);
+        } else {
+			amdroid.logger.log("Server AUTH successful");
         }
 
         authToken = hand.token;
@@ -206,12 +217,19 @@ public class ampacheCommunicator
                         }
 
                         /* now we fetch */
+	                    String urlText = prefs.getString("server_url_preference", "") + "/server/xml.server.php?" + append;
                         try {
-                            URL theUrl = new URL(prefs.getString("server_url_preference", "") + "/server/xml.server.php?" + append);
-                            dataIn = new InputSource(theUrl.openStream());
+	                        URL url = new URL(urlText);
+	                        dataIn = new InputSource(url.openStream());
+                        } catch (MalformedURLException e) {
+	                        Log.e(LOG_TAG, "Fetching #904 failed: " + e.getMessage(), e);
+	                        error = e.toString();
+	                        amdroid.logger.log("Failed preparing server request, malformed URL",
+			                        "URL used: " + urlText + "\n" + "Error details: " + error);
                         } catch (Exception e) {
 							Log.e(LOG_TAG, "Fetching #904 failed: " + e.getMessage(), e);
                             error = e.toString();
+	                        amdroid.logger.log("Failed preparing server request", "Error details: " + error);
                         }
 
                         if (stop == true) {
@@ -226,6 +244,8 @@ public class ampacheCommunicator
                         } catch (Exception e) {
 							Log.e(LOG_TAG, "Parsing #995 failed: " + e.getMessage(), e);
                             error = e.toString();
+	                        amdroid.logger.log("Failed parsing server response", "URL used: " + urlText + "\n"
+	                                + "Error details: " + error);
                         }
                         
                         if (hand.error != null) {
