@@ -79,6 +79,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 		b.setOnClickListener(this);
 
 		logsButton = (Button) view.findViewById(R.id.goto_logs);
+		logsButton.setBackgroundResource(R.drawable.btn_menu_log);
 		logsButton.setOnClickListener(this);
 		amdroid.logger.addLogListener(new AbstractUserLoggerListener()
 		{
@@ -91,15 +92,19 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 				switch (highestLogsSeverity) {
 					case DEBUG:
 						logsButton.setText(".");
+						logsButton.setBackgroundResource(R.drawable.btn_menu_log);
 						break;
 					case INFO:
 						logsButton.setText(":");
+						logsButton.setBackgroundResource(R.drawable.btn_menu_log);
 						break;
 					case WARNING:
 						logsButton.setText("!");
+						logsButton.setBackgroundResource(R.drawable.btn_menu_log_on);
 						break;
 					case CRITICAL:
 						logsButton.setText("!!");
+						logsButton.setBackgroundResource(R.drawable.btn_menu_log_on);
 						break;
 					default:
 						throw new RuntimeException("Unhandled severity value: " + highestLogsSeverity);
@@ -166,6 +171,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 		} else if (GOTO_LOGS.equals(id)) {
 			newFragment = new LogsFragment();
 			logsButton.setText("");
+			logsButton.setBackgroundResource(R.drawable.btn_menu_log);
 			highestLogsSeverity = null;
 		} else {
 			throw new RuntimeException("Unknown activity: " + id);

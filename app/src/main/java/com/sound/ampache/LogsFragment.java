@@ -166,6 +166,25 @@ public class LogsFragment extends Fragment implements AdapterView.OnItemClickLis
 			holder.title.setText(logEntry.title);
 			holder.details.setText(logEntry.details);
 
+			int colorResource = 0;
+			switch (logEntry.severity) {
+				case DEBUG:
+					colorResource = R.color.log_title_debug;
+					break;
+				case INFO:
+					colorResource = R.color.log_title_info;
+					break;
+				case WARNING:
+					colorResource = R.color.log_title_warning;
+					break;
+				case CRITICAL:
+					colorResource = R.color.log_title_critical;
+					break;
+				default:
+					throw new RuntimeException("Unhandled severity type: " + logEntry.severity);
+			}
+			holder.title.setTextColor(getResources().getColor(colorResource));
+
 			return convertView;
 		}
 	}

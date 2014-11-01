@@ -32,7 +32,7 @@
 			android:drawSelectorOnTop="true" />
 			
 		<ImageButton android:id="@+id/search_button"
-			android:src="@drawable/ic_search_category_default"
+			android:src="@drawable/ic_menu_search"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:gravity="right" />

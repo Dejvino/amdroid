@@ -18,4 +18,8 @@
     <string name="shuffle2">|Shuffle|</string>
     <string name="repeat">Repeat</string>
     <string name="repeat2">|Repeat|</string>
+    <color name="log_title_debug">#AAAAAA</color>
+    <color name="log_title_info">#FAFAFA</color>
+    <color name="log_title_warning">#FFFF11</color>
+    <color name="log_title_critical">#FF3311</color>
 </resources>
