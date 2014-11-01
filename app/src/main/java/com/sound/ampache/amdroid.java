@@ -26,7 +26,7 @@ package com.sound.ampache;
 import android.app.Application;
 import android.os.Bundle;
 
-import com.sound.ampache.utility.UserLogger;
+import com.sound.ampache.service.UserLogger;
 
 public final class amdroid extends Application
 {
@@ -57,7 +57,7 @@ public final class amdroid extends Application
         playbackControl = new GlobalMediaPlayerControl();
 		playbackControl.initService( getApplicationContext() );
 
-		logger.log("Application started");
+		logger.logInfo("Application started");
     }
 }
 

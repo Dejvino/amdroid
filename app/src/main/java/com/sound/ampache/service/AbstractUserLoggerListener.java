@@ -1,4 +1,4 @@
-package com.sound.ampache.utility;
+package com.sound.ampache.service;
 
 /* Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
@@ -20,24 +20,18 @@ package com.sound.ampache.utility;
  * +------------------------------------------------------------------------+
  */
 
-import com.sound.ampache.objects.Media;
+import android.os.Handler;
+import android.os.Messenger;
+
 import com.sound.ampache.objects.UserLogEntry;
 
 /**
- * Log entry factory.
+ * Description: Convenience class for implementing the UserLoggerListener interface.
+ *
+ * @author Dejvino
+ * @since 2014-11-01
  */
-public class UserLogEntryFactory
+public abstract class AbstractUserLoggerListener extends Handler implements UserLoggerListener
 {
-    public static UserLogEntry create(UserLogEntry.Severity severity, String title, Media media)
-    {
-        return new UserLogEntry(severity, title, describe(media));
-    }
-
-    public static String describe(Media media)
-    {
-        if (media == null) {
-            return "No media";
-        }
-        return media.getType() + " @ " + media.getLiveUrl("TOKEN");
-    }
+	protected final Messenger messenger = new Messenger(this);
 }

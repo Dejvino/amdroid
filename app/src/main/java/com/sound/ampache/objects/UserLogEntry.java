@@ -7,20 +7,30 @@ import java.util.Date;
  */
 public class UserLogEntry
 {
+	public static enum Severity implements Comparable<Severity>
+	{
+		DEBUG,
+		INFO,
+		WARNING,
+		CRITICAL
+	}
+
     public final Date timestamp;
+	public final Severity severity;
     public final String title;
     public final String details;
 
-    public UserLogEntry(Date timestamp, String title, String details)
-    {
-        this.timestamp = timestamp;
+	public UserLogEntry(Date timestamp, Severity severity, String title, String details)
+	{
+		this.timestamp = timestamp;
+		this.severity = severity;
         this.title = title;
         this.details = details;
-    }
+	}
 
-    public UserLogEntry(String title, String details)
+    public UserLogEntry(Severity severity, String title, String details)
     {
-        this(new Date(), title, details);
+        this(new Date(), severity, title, details);
     }
 
     @Override

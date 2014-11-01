@@ -1,4 +1,4 @@
-package com.sound.ampache.utility;
+package com.sound.ampache.service;
 
 import com.sound.ampache.objects.UserLogEntry;
 

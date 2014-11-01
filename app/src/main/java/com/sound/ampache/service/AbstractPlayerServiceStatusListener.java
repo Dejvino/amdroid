@@ -24,7 +24,7 @@ import android.os.Handler;
 import android.os.Messenger;
 
 /**
- * Description: Convenience method for implementing the PlayerServiceStatusListener interface.
+ * Description: Convenience class for implementing the PlayerServiceStatusListener interface.
  *
  * @author Dejvino
  * @since 2014-09-06

@@ -29,12 +29,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sound.ampache.objects.UserLogEntry;
-import com.sound.ampache.utility.UserLoggerListener;
+import com.sound.ampache.service.UserLoggerListener;
 
 import java.text.SimpleDateFormat;
 
@@ -69,7 +68,7 @@ public class LogsFragment extends Fragment implements AdapterView.OnItemClickLis
 	    logsAdapter = new LogsAdapter(getActivity());
 	    listView.setAdapter(logsAdapter);
 
-	    amdroid.logger.setLogListener(this);
+	    amdroid.logger.addLogListener(this);
 
 	    // Center the playlist at the current song
 	    centerList( 0 );
@@ -144,7 +143,8 @@ public class LogsFragment extends Fragment implements AdapterView.OnItemClickLis
                 convertView = mInflater.inflate(R.layout.log_item, null);
                 holder = new listItem();
 
-                holder.timestamp = (TextView) convertView.findViewById(R.id.timestamp);
+				holder.timestamp = (TextView) convertView.findViewById(R.id.timestamp);
+				holder.severity = (TextView) convertView.findViewById(R.id.severity);
                 holder.title = (TextView) convertView.findViewById(R.id.title);
                 holder.details = (TextView) convertView.findViewById(R.id.details);
 
@@ -154,6 +154,7 @@ public class LogsFragment extends Fragment implements AdapterView.OnItemClickLis
             }
 
             holder.timestamp.setText(new SimpleDateFormat().format(logEntry.timestamp));
+			holder.severity.setText(logEntry.severity.toString());
             holder.title.setText(logEntry.title);
             holder.details.setText(logEntry.details);
 
@@ -163,6 +164,7 @@ public class LogsFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private static class listItem {
         TextView timestamp;
+	    TextView severity;
         TextView title;
         TextView details;
     }

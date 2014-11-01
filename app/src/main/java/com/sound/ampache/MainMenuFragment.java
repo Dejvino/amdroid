@@ -1,14 +1,16 @@
 package com.sound.ampache;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
+
+import com.sound.ampache.objects.UserLogEntry;
+import com.sound.ampache.service.AbstractUserLoggerListener;
+import com.sound.ampache.service.UserLoggerListener;
 
 /* Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
@@ -47,6 +49,8 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 	public static final String GOTO_LOGS = "goto_logs";
 
     private MiniPlayer miniPlayer;
+	private Button logsButton;
+	private UserLogEntry.Severity highestLogsSeverity = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -74,8 +78,33 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
         b.setOnClickListener(this);
 		b = (ImageButton)view.findViewById(R.id.goto_preferences);
 		b.setOnClickListener(this);
-		b = (ImageButton)view.findViewById(R.id.goto_logs);
-		b.setOnClickListener(this);
+
+		logsButton = (Button)view.findViewById(R.id.goto_logs);
+		logsButton.setOnClickListener(this);
+		amdroid.logger.addLogListener(new AbstractUserLoggerListener() {
+			@Override
+			public void onLogEntry(UserLogEntry logEntry) {
+				if (highestLogsSeverity == null || highestLogsSeverity.compareTo(logEntry.severity) < 0) {
+					highestLogsSeverity = logEntry.severity;
+				}
+				switch (highestLogsSeverity) {
+					case DEBUG:
+						logsButton.setText(".");
+						break;
+					case INFO:
+						logsButton.setText(":");
+						break;
+					case WARNING:
+						logsButton.setText("!");
+						break;
+					case CRITICAL:
+						logsButton.setText("!!");
+						break;
+					default:
+						throw new RuntimeException("Unhandled severity value: " + highestLogsSeverity);
+				}
+			}
+		});
 
 		setActivity(GOTO_HOME);
     }
@@ -135,6 +164,8 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 			newFragment = new PreferencesFragment();
 		} else if (GOTO_LOGS.equals(id)) {
 			newFragment = new LogsFragment();
+			logsButton.setText("");
+			highestLogsSeverity = null;
 		} else {
 			throw new RuntimeException("Unknown activity: " + id);
 		}
