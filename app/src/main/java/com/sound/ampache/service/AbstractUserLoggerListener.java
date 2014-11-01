@@ -23,8 +23,6 @@ package com.sound.ampache.service;
 import android.os.Handler;
 import android.os.Messenger;
 
-import com.sound.ampache.objects.UserLogEntry;
-
 /**
  * Description: Convenience class for implementing the UserLoggerListener interface.
  *

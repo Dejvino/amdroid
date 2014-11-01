@@ -20,99 +20,115 @@ package com.sound.ampache.objects;
  * +------------------------------------------------------------------------+
  */
 
-import android.os.Parcelable;
 import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Externalizable;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.IOException;
-import java.lang.ClassNotFoundException;
 
-public class Video extends Media implements Externalizable {
-    public String mime = "";
-    public String resolution = "";
+public class Video extends Media implements Externalizable
+{
+	public String mime = "";
+	public String resolution = "";
 
-    public String getType() {
-        return "Video";
-    }
+	public String getType()
+	{
+		return "Video";
+	}
 
-    public String extraString() {
-        if ( extra == null ) {
-            extra = mime + " - " + resolution;
-        }
+	public String extraString()
+	{
+		if (extra == null) {
+			extra = mime + " - " + resolution;
+		}
 
-        return extra;
-    }
+		return extra;
+	}
 
-    public String childString() {
-        return "";
-    }
+	public String childString()
+	{
+		return "";
+	}
 
-    /* Replace the old session id with our current one */
-    public String liveUrl(String authToken) {
-        return url.replaceAll("sid=[^&]+","sid=" + authToken);
-    }
+	/* Replace the old session id with our current one */
+	public String liveUrl(String authToken)
+	{
+		return url.replaceAll("sid=[^&]+", "sid=" + authToken);
+	}
 
-    public boolean hasChildren() {
-        return false;
-    }
+	public boolean hasChildren()
+	{
+		return false;
+	}
 
-    public String[] allChildren() {
-        return null;
-    }
+	public String[] allChildren()
+	{
+		return null;
+	}
 
-    public Video() {
-    }
+	public Video()
+	{
+	}
 
-    public void writeToParcel(Parcel out, int flags) {
-        super.parcelOut(out, flags);
-        out.writeString(resolution);
-        out.writeString(mime);
-        out.writeString(genre);
-    }
+	public void writeToParcel(Parcel out, int flags)
+	{
+		super.parcelOut(out, flags);
+		out.writeString(resolution);
+		out.writeString(mime);
+		out.writeString(genre);
+	}
 
-    public Video(Parcel in) {
-        readFromParcel( in );
-    }
+	public Video(Parcel in)
+	{
+		readFromParcel(in);
+	}
 
-    public void readFromParcel( Parcel in ) {
-        super.parcelIn(in);
-        resolution = in.readString();
-        mime = in.readString();
-        genre = in.readString();
-    }
+	public void readFromParcel(Parcel in)
+	{
+		super.parcelIn(in);
+		resolution = in.readString();
+		mime = in.readString();
+		genre = in.readString();
+	}
 
-    public static final Parcelable.Creator<Video> CREATOR
-        = new Parcelable.Creator<Video>() {
-                public Video createFromParcel(Parcel in) {
-                    return new Video(in);
-                }
+	public static final Parcelable.Creator<Video> CREATOR
+			= new Parcelable.Creator<Video>()
+	{
+		public Video createFromParcel(Parcel in)
+		{
+			return new Video(in);
+		}
 
-                public Video[] newArray(int size) {
-                    return new Video[size];
-                }
-            };
+		public Video[] newArray(int size)
+		{
+			return new Video[size];
+		}
+	};
 
-    /* for external */
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id = (String) in.readObject();
-        name = (String) in.readObject();
-        url = (String) in.readObject();
-        genre = (String) in.readObject();
-        size = (String) in.readObject();
-        resolution = (String) in.readObject();
-        mime = (String) in.readObject();
-    }
+	/* for external */
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	{
+		id = (String) in.readObject();
+		name = (String) in.readObject();
+		url = (String) in.readObject();
+		genre = (String) in.readObject();
+		size = (String) in.readObject();
+		resolution = (String) in.readObject();
+		mime = (String) in.readObject();
+	}
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(id);
-        out.writeObject(name);
-        out.writeObject(url);
-        out.writeObject(genre);
-        out.writeObject(size);
-        out.writeObject(resolution);
-        out.writeObject(mime);
-    }
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		out.writeObject(id);
+		out.writeObject(name);
+		out.writeObject(url);
+		out.writeObject(genre);
+		out.writeObject(size);
+		out.writeObject(resolution);
+		out.writeObject(mime);
+	}
 
 }
 

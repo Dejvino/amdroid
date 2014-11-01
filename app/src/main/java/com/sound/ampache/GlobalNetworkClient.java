@@ -51,7 +51,8 @@ public class GlobalNetworkClient
 	public void auth()
 	{
 		// register playback result listener
-		Messenger replyTo = new Messenger(new Handler() {
+		Messenger replyTo = new Messenger(new Handler()
+		{
 			@Override
 			public void handleMessage(Message msg)
 			{

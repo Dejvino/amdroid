@@ -20,44 +20,49 @@ package com.sound.ampache.objects;
  * +------------------------------------------------------------------------+
  */
 
-import android.os.Parcelable; 
 import android.os.Parcel;
-import java.util.ArrayList;
+import android.os.Parcelable;
 
-public abstract class ampacheObject implements Parcelable {
-    public String id = "";
-    public String name = "";
-    
-    public String getId() {
-        return id;
-    }
-    
-    public String toString() {
-        return name;
-    }
+public abstract class ampacheObject implements Parcelable
+{
+	public String id = "";
+	public String name = "";
 
-    abstract public String extraString();
+	public String getId()
+	{
+		return id;
+	}
 
-    abstract public String getType();
+	public String toString()
+	{
+		return name;
+	}
 
-    abstract public String childString();
+	abstract public String extraString();
 
-    abstract public String[] allChildren();
+	abstract public String getType();
 
-    abstract public boolean hasChildren();
+	abstract public String childString();
 
-    /* for parcelable*/
-    public int describeContents() {
-        return CONTENTS_FILE_DESCRIPTOR;
-    }
+	abstract public String[] allChildren();
 
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString(id);
-        out.writeString(name);
-    }
+	abstract public boolean hasChildren();
 
-    public void readFromParcel(Parcel in) {
-        id = in.readString();
-        name = in.readString();
-    }
+	/* for parcelable*/
+	public int describeContents()
+	{
+		return CONTENTS_FILE_DESCRIPTOR;
+	}
+
+	public void writeToParcel(Parcel out, int flags)
+	{
+		out.writeString(id);
+		out.writeString(name);
+	}
+
+	public void readFromParcel(Parcel in)
+	{
+		id = in.readString();
+		name = in.readString();
+	}
 }

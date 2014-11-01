@@ -28,7 +28,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class Database {
+public class Database
+{
 
 	public String type = "Invalid";
 
@@ -46,39 +47,43 @@ public class Database {
 
 	// Constructors **************************************************
 
-	public Database( Context context ) {
+	public Database(Context context)
+	{
 		this.context = context;
-		OpenHelper openHelper = new OpenHelper( this.context );
+		OpenHelper openHelper = new OpenHelper(this.context);
 
 		db = openHelper.getWritableDatabase();
 
-		COLUMN_NAMES.add( "id" );
-		COLUMN_NAMES.add( "name" );
-		COLUMN_NAMES.add( "last_change" );
+		COLUMN_NAMES.add("id");
+		COLUMN_NAMES.add("name");
+		COLUMN_NAMES.add("last_change");
 
-		TABLE_CREATE = " (" + COLUMN_NAMES.get( 0 ) + " INTEGER PRIMARY TEXT, " + COLUMN_NAMES.get( 1 ) + " TEXT, " + COLUMN_NAMES.get( 2 ) + " TEXT"; 
+		TABLE_CREATE = " (" + COLUMN_NAMES.get(0) + " INTEGER PRIMARY TEXT, " + COLUMN_NAMES.get(1) + " TEXT, " + COLUMN_NAMES.get(2) + " TEXT";
 	}
 
 
 	// Gets **********************************************************
 
-	public SQLiteDatabase getDb() {
+	public SQLiteDatabase getDb()
+	{
 		return db;
 	}
 
-	public ArrayList<String> getColumns() {
+	public ArrayList<String> getColumns()
+	{
 		return COLUMN_NAMES;
 	}
 
-	protected String columnList() {
+	protected String columnList()
+	{
 		String out = "(";
 
 		// Build list of Columns for SQL query e.g. (id, names, last_change)
-		for ( int c = 0; c < COLUMN_NAMES.size(); c++ ) {
-			if ( c > 0 )
+		for (int c = 0; c < COLUMN_NAMES.size(); c++) {
+			if (c > 0)
 				out += ", ";
 
-			out += COLUMN_NAMES.get( c );
+			out += COLUMN_NAMES.get(c);
 		}
 
 		out += ")";
@@ -89,19 +94,22 @@ public class Database {
 
 	// Functions *****************************************************
 
-	public Cursor query( String sqlSearch ) {
-		return db.query( TABLE_NAME, (String[]) COLUMN_NAMES.toArray(), sqlSearch, null, null, null, null );
+	public Cursor query(String sqlSearch)
+	{
+		return db.query(TABLE_NAME, (String[]) COLUMN_NAMES.toArray(), sqlSearch, null, null, null, null);
 	}
 
-	public void deleteAll() {
-		db.delete( TABLE_NAME, null, null );
+	public void deleteAll()
+	{
+		db.delete(TABLE_NAME, null, null);
 	}
 
 	// To be called within the constructor of the derived class
-	protected void completeTableCreateParam() {
+	protected void completeTableCreateParam()
+	{
 		// Complete TABLE_CREATE contents
-		for ( int c = 3; c < COLUMN_NAMES.size(); c++ )
-			TABLE_CREATE += ", " + COLUMN_NAMES.get( c ) + " TEXT";
+		for (int c = 3; c < COLUMN_NAMES.size(); c++)
+			TABLE_CREATE += ", " + COLUMN_NAMES.get(c) + " TEXT";
 
 		TABLE_CREATE += ")";
 	}
@@ -109,22 +117,26 @@ public class Database {
 
 	// Helpers *******************************************************
 
-	private class OpenHelper extends SQLiteOpenHelper {
+	private class OpenHelper extends SQLiteOpenHelper
+	{
 
-		OpenHelper( Context context ) {
-			super( context, DATABASE_NAME, null, DATABASE_VERSION );
+		OpenHelper(Context context)
+		{
+			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 
 		@Override
-		public void onCreate( SQLiteDatabase db ) {
-			db.execSQL( "CREATE TABLE " + TABLE_NAME + TABLE_CREATE );
+		public void onCreate(SQLiteDatabase db)
+		{
+			db.execSQL("CREATE TABLE " + TABLE_NAME + TABLE_CREATE);
 		}
 
 		@Override
-		public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
-			Log.w( "Amdroid", "Database/OpenHelper - Upgrading database, this will drop tables and recreate it." );
-			db.execSQL( "DROP TABLE IF EXISTS " + TABLE_NAME );
-			onCreate( db );
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+		{
+			Log.w("Amdroid", "Database/OpenHelper - Upgrading database, this will drop tables and recreate it.");
+			db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+			onCreate(db);
 		}
 	}
 

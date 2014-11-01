@@ -51,12 +51,12 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 		GlobalMediaPlayerControl.PlaylistCurrentListener
 {
 	private View empty;
-    private ListView lv;
-    private ImageView artView;
+	private ListView lv;
+	private ImageView artView;
 
-    private PlaylistAdapter pla;
+	private PlaylistAdapter pla;
 
-    private Boolean albumArtEnabled = false;
+	private Boolean albumArtEnabled = false;
 	private PlaybackListener playbackListener = new PlaybackListener();
 
 	@Override
@@ -71,28 +71,28 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 		super.onViewCreated(view, savedInstanceState);
 
 		empty = view.findViewById(android.R.id.empty);
-        lv = (ListView) view.findViewById(R.id.list);
-        lv.setOnItemClickListener(this);
+		lv = (ListView) view.findViewById(R.id.list);
+		lv.setOnItemClickListener(this);
 
-        pla = new PlaylistAdapter(getActivity());
-        lv.setAdapter(pla);
-        
-        // register our adapter to be called when a change to the currentPlaylist ocurrs  
-        amdroid.playbackControl.setPlayingIndexListener( this );
-        
-        //register ourselves to receive callbacks when playing index changes occurr
-        amdroid.playbackControl.setPlaylistCurrentListener( this );
+		pla = new PlaylistAdapter(getActivity());
+		lv.setAdapter(pla);
 
-        // Setup Album Art View TODO
-        artView = (ImageView) view.findViewById(R.id.picview);
+		// register our adapter to be called when a change to the currentPlaylist ocurrs
+		amdroid.playbackControl.setPlayingIndexListener(this);
 
-        // Load Album Art on Entry, currently SLOOOOOOW so TODO
-        //if ( amdroid.playbackControl.getPlaylistCurrent().size() > 0 )
-        //    loadAlbumArt();
+		//register ourselves to receive callbacks when playing index changes occurr
+		amdroid.playbackControl.setPlaylistCurrentListener(this);
 
-        // Center the playlist at the current song
-        centerList( 0 );
-    }
+		// Setup Album Art View TODO
+		artView = (ImageView) view.findViewById(R.id.picview);
+
+		// Load Album Art on Entry, currently SLOOOOOOW so TODO
+		//if ( amdroid.playbackControl.getPlaylistCurrent().size() > 0 )
+		//    loadAlbumArt();
+
+		// Center the playlist at the current song
+		centerList(0);
+	}
 
 	@Override
 	public void onStart()
@@ -109,7 +109,7 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 	}
 
 	/*@Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+	public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.playlist_menu, menu);
@@ -169,111 +169,119 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
         return true;
     }*/
 
-    private void loadAlbumArt()
-    {
-        if (amdroid.playbackControl.getPlaylistCurrent().size()<=0 || !albumArtEnabled){
-            artView.setVisibility(View.GONE);
-            return;
-        }
-        
-        int i = amdroid.playbackControl.getPlayingIndex();
-        if (i>=amdroid.playbackControl.getPlaylistCurrent().size())
-            return;
-        Song chosen = (Song) amdroid.playbackControl.getPlaylistCurrent().get(amdroid.playbackControl.getPlayingIndex());
+	private void loadAlbumArt()
+	{
+		if (amdroid.playbackControl.getPlaylistCurrent().size() <= 0 || !albumArtEnabled) {
+			artView.setVisibility(View.GONE);
+			return;
+		}
 
-        Log.i("Amdroid", "Art URL     - " + chosen.art );
-        Log.i("Amdroid", "Art URL (C) - " + chosen.liveArt("#TOKEN#") );
+		int i = amdroid.playbackControl.getPlayingIndex();
+		if (i >= amdroid.playbackControl.getPlaylistCurrent().size())
+			return;
+		Song chosen = (Song) amdroid.playbackControl.getPlaylistCurrent().get(amdroid.playbackControl.getPlayingIndex());
 
-        try {
-            URL artUrl = new URL( chosen.liveArt("#TOKEN#") );
-            Object artContent = artUrl.getContent();
-            Drawable albumArt = Drawable.createFromStream( (InputStream) artContent, "src" );
-            artView.setImageDrawable( albumArt );
+		Log.i("Amdroid", "Art URL     - " + chosen.art);
+		Log.i("Amdroid", "Art URL (C) - " + chosen.liveArt("#TOKEN#"));
 
-            if ( artView.getDrawable() != null )
-                artView.setVisibility( View.VISIBLE );
+		try {
+			URL artUrl = new URL(chosen.liveArt("#TOKEN#"));
+			Object artContent = artUrl.getContent();
+			Drawable albumArt = Drawable.createFromStream((InputStream) artContent, "src");
+			artView.setImageDrawable(albumArt);
+
+			if (artView.getDrawable() != null)
+				artView.setVisibility(View.VISIBLE);
             /* Something needs to happen here to clear the image view, too lazy atm */
-            else
-            {
-                artView.setVisibility( View.GONE );
-            }
-            
-
-        } catch ( MalformedURLException e ) {
-            Log.i("Amdroid", "Album Art URL sucks! Try something else.");
-        } catch ( IOException e ) {
-            Log.i("Amdroid", "Teh interwebs died...");
-        }
-    }
+			else {
+				artView.setVisibility(View.GONE);
+			}
 
 
-    /* These functions help with displaying the |> icon next to the currently playing song */
-    private void turnOffPlayingView() {
+		} catch (MalformedURLException e) {
+			Log.i("Amdroid", "Album Art URL sucks! Try something else.");
+		} catch (IOException e) {
+			Log.i("Amdroid", "Teh interwebs died...");
+		}
+	}
+
+
+	/* These functions help with displaying the |> icon next to the currently playing song */
+	private void turnOffPlayingView()
+	{
         /* TODO we should probably keep track of which song we've displayed a playing icon for. 
          * Looping through all items in the listview will be unneffective for large lists */
-        for (int i=0; i < lv.getChildCount(); i++){
-            View holder = lv.getChildAt(i);
-            if (holder != null) {
-                ImageView img = (ImageView) holder.findViewById(R.id.art);
-                img.setVisibility(View.INVISIBLE);
-            }
-        }
-    }
+		for (int i = 0; i < lv.getChildCount(); i++) {
+			View holder = lv.getChildAt(i);
+			if (holder != null) {
+				ImageView img = (ImageView) holder.findViewById(R.id.art);
+				img.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
 
-    private void turnOnPlayingView() {
-        if (amdroid.playbackControl.getPlayingIndex() >= lv.getFirstVisiblePosition() && amdroid.playbackControl.getPlayingIndex() <= lv.getLastVisiblePosition()) {
-            View holder = lv.getChildAt(amdroid.playbackControl.getPlayingIndex() - lv.getFirstVisiblePosition());
-            if (holder != null) {
-                ImageView img = (ImageView) holder.findViewById(R.id.art);
-                img.setVisibility(View.VISIBLE);
-            }
-        }
-    }
+	private void turnOnPlayingView()
+	{
+		if (amdroid.playbackControl.getPlayingIndex() >= lv.getFirstVisiblePosition() && amdroid.playbackControl.getPlayingIndex() <= lv.getLastVisiblePosition()) {
+			View holder = lv.getChildAt(amdroid.playbackControl.getPlayingIndex() - lv.getFirstVisiblePosition());
+			if (holder != null) {
+				ImageView img = (ImageView) holder.findViewById(R.id.art);
+				img.setVisibility(View.VISIBLE);
+			}
+		}
+	}
 
-    @Override
-    public void onItemClick(AdapterView l, View v, int position, long id) {
-        if (amdroid.playbackControl.prepared) {
-            amdroid.playbackControl.setPlayingIndex(position);
-            amdroid.playbackControl.play();
-        }
-    }
+	@Override
+	public void onItemClick(AdapterView l, View v, int position, long id)
+	{
+		if (amdroid.playbackControl.prepared) {
+			amdroid.playbackControl.setPlayingIndex(position);
+			amdroid.playbackControl.play();
+		}
+	}
 
 
-    private void centerList (int adjust)
-    {
+	private void centerList(int adjust)
+	{
 		int playlistIndex = amdroid.playbackControl.getPlayingIndex();
-        lv.setSelection(playlistIndex + adjust );
+		lv.setSelection(playlistIndex + adjust);
 		refreshEmptyView();
-    }
+	}
 
-    private class PlaylistAdapter extends BaseAdapter
-    {
-        private LayoutInflater mInflater;
+	private class PlaylistAdapter extends BaseAdapter
+	{
+		private LayoutInflater mInflater;
 
-        public PlaylistAdapter(Context context) {
-            mInflater = LayoutInflater.from(context);
-        }
+		public PlaylistAdapter(Context context)
+		{
+			mInflater = LayoutInflater.from(context);
+		}
 
-        public int getCount() {
-            return amdroid.playbackControl.getPlaylistCurrent().size();
-        }
+		public int getCount()
+		{
+			return amdroid.playbackControl.getPlaylistCurrent().size();
+		}
 
-        public Object getItem(int position) {
-            return amdroid.playbackControl.getPlaylistCurrent().get(position);
-        }
+		public Object getItem(int position)
+		{
+			return amdroid.playbackControl.getPlaylistCurrent().get(position);
+		}
 
-        public long getItemId(int position) {
-            return position;
-        }
+		public long getItemId(int position)
+		{
+			return position;
+		}
 
-        public void refresh() {
-            notifyDataSetChanged();
-        }
+		public void refresh()
+		{
+			notifyDataSetChanged();
+		}
 
-        public void clearItems() {
-            amdroid.playbackControl.clearPlaylistCurrent();
-            notifyDataSetChanged();
-        }
+		public void clearItems()
+		{
+			amdroid.playbackControl.clearPlaylistCurrent();
+			notifyDataSetChanged();
+		}
 
 		@Override
 		public boolean isEmpty()
@@ -281,41 +289,43 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
 			return getCount() <= 0;
 		}
 
-		public View getView(int position, View convertView, ViewGroup parent) {
-            plI holder;
-            Media cur = amdroid.playbackControl.getPlaylistCurrent().get(position);
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			plI holder;
+			Media cur = amdroid.playbackControl.getPlaylistCurrent().get(position);
 
             /* we don't reuse  */
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.playlist_item, null);
-                holder = new plI();
+			if (convertView == null) {
+				convertView = mInflater.inflate(R.layout.playlist_item, null);
+				holder = new plI();
 
-                holder.title = (TextView) convertView.findViewById(R.id.title);
-                holder.other = (TextView) convertView.findViewById(R.id.other);
-                holder.art = (ImageView) convertView.findViewById(R.id.art);
+				holder.title = (TextView) convertView.findViewById(R.id.title);
+				holder.other = (TextView) convertView.findViewById(R.id.other);
+				holder.art = (ImageView) convertView.findViewById(R.id.art);
 
-                convertView.setTag(holder);
-            } else {
-                holder = (plI) convertView.getTag();
-            }
+				convertView.setTag(holder);
+			} else {
+				holder = (plI) convertView.getTag();
+			}
 
-            holder.title.setText(cur.name);
-            holder.other.setText(cur.extraString());
-            if (amdroid.playbackControl.getPlayingIndex() == position) {
-                holder.art.setVisibility(View.VISIBLE);
-            } else {
-                holder.art.setVisibility(View.INVISIBLE);
-            }
+			holder.title.setText(cur.name);
+			holder.other.setText(cur.extraString());
+			if (amdroid.playbackControl.getPlayingIndex() == position) {
+				holder.art.setVisibility(View.VISIBLE);
+			} else {
+				holder.art.setVisibility(View.INVISIBLE);
+			}
 
-            return convertView;
-        }
-    }
+			return convertView;
+		}
+	}
 
-    static class plI {
-        TextView title;
-        TextView other;
-        ImageView art;
-    }
+	static class plI
+	{
+		TextView title;
+		TextView other;
+		ImageView art;
+	}
 
 
     /*public boolean onKeyDown(int keyCode, KeyEvent event)  {
@@ -327,13 +337,13 @@ public final class PlaylistFragment extends Fragment implements OnItemClickListe
         return super.onKeyDown(keyCode, event);
     }*/
 
-    @Override
+	@Override
 	public void onPlayingIndexChange()
 	{
 		turnOffPlayingView();
-        centerList(-1);
-        turnOnPlayingView();
-        loadAlbumArt();
+		centerList(-1);
+		turnOnPlayingView();
+		loadAlbumArt();
 	}
 
 	private void refreshEmptyView()

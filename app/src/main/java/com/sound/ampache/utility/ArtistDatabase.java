@@ -29,19 +29,21 @@ import com.sound.ampache.objects.Artist;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ArtistDatabase extends Database {
+public class ArtistDatabase extends Database
+{
 
 	// Constructors **************************************************
 
-	ArtistDatabase( Context context, String databaseName ) {
-		super( context );
+	ArtistDatabase(Context context, String databaseName)
+	{
+		super(context);
 
 		type = "Artist";
 
 		DATABASE_NAME = databaseName;
 		TABLE_NAME = "ArtistCache";
 
-		COLUMN_NAMES.add( "albums" );
+		COLUMN_NAMES.add("albums");
 
 		completeTableCreateParam();
 	}
@@ -49,9 +51,10 @@ public class ArtistDatabase extends Database {
 
 	// Functions *****************************************************
 
-	public boolean addEntry( String id, String artistName, String numberOfAlbums ) {
+	public boolean addEntry(String id, String artistName, String numberOfAlbums)
+	{
 		// Get the current time, and convert it to a string
-		String time = Long.toString( ( new Date() ).getTime() / 1000 );
+		String time = Long.toString((new Date()).getTime() / 1000);
 
 		// Build Insert Query
 		String queryString = "INSERT INTO " + TABLE_NAME + " " + columnList() + " VALUES (" +
@@ -61,24 +64,25 @@ public class ArtistDatabase extends Database {
 				time + ");";
 
 		try {
-			db.execSQL( queryString );
-		}
-		catch ( Exception exc ) {
+			db.execSQL(queryString);
+		} catch (Exception exc) {
 			// Damn...
-			Log.e( "Amdroid", "Database/Artist - Insertion Failure... " + queryString );
+			Log.e("Amdroid", "Database/Artist - Insertion Failure... " + queryString);
 			return false;
 		}
 
 		return true;
 	}
 
-	public boolean addEntry( Artist entry ) {
-		return addEntry( entry.id, entry.name, entry.albums );
+	public boolean addEntry(Artist entry)
+	{
+		return addEntry(entry.id, entry.name, entry.albums);
 	}
 
-	public boolean addEntries( ArrayList<Artist> list ) {
-		for ( int c = 0; c < list.size(); c++ )
-			if ( !addEntry( list.get( c ) ) )
+	public boolean addEntries(ArrayList<Artist> list)
+	{
+		for (int c = 0; c < list.size(); c++)
+			if (!addEntry(list.get(c)))
 				return false;
 
 		return true;

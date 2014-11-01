@@ -21,25 +21,38 @@ package com.sound.ampache.service;
  */
 
 /**
-* Description: PlayerService status update listener.
-*
-* @author Dejvino
-* @since 2014-09-06
-*/
+ * Description: PlayerService status update listener.
+ *
+ * @author Dejvino
+ * @since 2014-09-06
+ */
 public interface PlayerServiceStatusListener
 {
 	void onServiceConnected();
+
 	void onServiceDisconnected();
+
 	void onSeek(int position);
+
 	void onBuffering(int buffer);
+
 	void onNewMedia();
+
 	void onPlaylistIndexChanged(int index);
+
 	void onShuffledChanged(int enabled);
+
 	void onRepeatChanged(int enabled);
+
 	void onPlay();
+
 	void onPause();
+
 	void onStop();
+
 	void onVideoSizeChanged(int width, int height);
+
 	void onPlaylistChanged(int size);
+
 	void onError(int what, int extra);
 }

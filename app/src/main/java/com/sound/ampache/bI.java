@@ -22,7 +22,8 @@ package com.sound.ampache;
 
 import android.widget.TextView;
 
-public final class bI {
-    TextView title;
-    TextView other;
+public final class bI
+{
+	TextView title;
+	TextView other;
 }

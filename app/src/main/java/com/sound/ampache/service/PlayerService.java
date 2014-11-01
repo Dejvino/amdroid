@@ -21,9 +21,6 @@ package com.sound.ampache.service;
  * +------------------------------------------------------------------------+
  */
 
-import java.util.Arrays;
-import java.util.ArrayList;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -37,10 +34,12 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.sound.ampache.MainActivity;
-import com.sound.ampache.PlaylistFragment;
-import com.sound.ampache.objects.*;
+import com.sound.ampache.objects.Media;
 import com.sound.ampache.utility.Player;
 import com.sound.ampache.utility.Playlist;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PlayerService extends Service
 {
@@ -61,181 +60,241 @@ public class PlayerService extends Service
 	// **********************************************************************
 
 	@Override
-	public IBinder onBind( Intent intent ) {
-		Log.d( LOG_TAG, "onBind" );
+	public IBinder onBind(Intent intent)
+	{
+		Log.d(LOG_TAG, "onBind");
 
 		// Make sure it's a valid request TODO
-		if ( IPlayerService.class.getName().equals( intent.getAction() ) )
+		if (IPlayerService.class.getName().equals(intent.getAction()))
 			return mBinder;
 
 		return mBinder;
 	}
 
 	@Override
-	public void onRebind( Intent intent ) {
+	public void onRebind(Intent intent)
+	{
 		// All clients disconnected, and another connection is made
-		Log.d( LOG_TAG, "onRebind" );
+		Log.d(LOG_TAG, "onRebind");
 	}
 
 	@Override
-	public boolean onUnbind( Intent intent ) {
-		Log.d( LOG_TAG, "onUnbind" );
+	public boolean onUnbind(Intent intent)
+	{
+		Log.d(LOG_TAG, "onUnbind");
 		return true;
 	}
 
 	@Override
-	public void onCreate() {
-		Log.d( LOG_TAG, "onCreate" );
+	public void onCreate()
+	{
+		Log.d(LOG_TAG, "onCreate");
 		playlist = new Playlist();
-		mediaPlayer = new Player( this, playlist );
+		mediaPlayer = new Player(this, playlist);
 
 		// Setup Listner
 		listener = new PlayerInterfaceListener();
-		mediaPlayer.setPlayerListener( listener );
+		mediaPlayer.setPlayerListener(listener);
 	}
 
 	@Override
-	public void onDestroy() {
-		Log.d( LOG_TAG, "onDestroy" );
+	public void onDestroy()
+	{
+		Log.d(LOG_TAG, "onDestroy");
 		mediaPlayer.quit(); // Cleanup the telephony handler
 	}
 
 	@Override
-	protected void finalize() {
-		Log.d( LOG_TAG, "Android hath slain me :(killed):" );
+	protected void finalize()
+	{
+		Log.d(LOG_TAG, "Android hath slain me :(killed):");
 		// TODO Warn the user (text) that the VM is killing the service
 	}
 
 	// Interface **********************************************************
 
-	private final IPlayerService.Stub mBinder = new IPlayerService.Stub() {
+	private final IPlayerService.Stub mBinder = new IPlayerService.Stub()
+	{
 		// Player Status
-		public boolean isPlaying() {
+		public boolean isPlaying()
+		{
 			return mediaPlayer.isPlaying();
 		}
-		public boolean isSeekable() {
+
+		public boolean isSeekable()
+		{
 			return mediaPlayer.isSeekable();
 		}
-		public int getBuffer() {
+
+		public int getBuffer()
+		{
 			return mediaPlayer.getBuffer();
 		}
-		public int getCurrentPosition() {
+
+		public int getCurrentPosition()
+		{
 			return mediaPlayer.getCurrentPosition();
 		}
-		public int getDuration() {
+
+		public int getDuration()
+		{
 			return mediaPlayer.getDuration();
 		}
 
 		// Player Controls
-		public void playMedia( Media media ) {
+		public void playMedia(Media media)
+		{
 			// TODO REMOVEME
-			sendMessage( MSG_PLAY );
-			mediaPlayer.playMedia( media );
+			sendMessage(MSG_PLAY);
+			mediaPlayer.playMedia(media);
 			statusNotify();
 		}
-		public void playPause() {
+
+		public void playPause()
+		{
 			mediaPlayer.doPauseResume();
 			stopNotify();
 		}
-		public void stop() {
+
+		public void stop()
+		{
 			mediaPlayer.stop();
 			stopNotify();
 		}
-		public void next() {
-			mediaPlayer.playMedia( playlist.next() );
+
+		public void next()
+		{
+			mediaPlayer.playMedia(playlist.next());
 			statusNotify();
 		}
-		public void prev() {
-			mediaPlayer.playMedia( playlist.prev() );
+
+		public void prev()
+		{
+			mediaPlayer.playMedia(playlist.prev());
 			statusNotify();
 		}
-		public void seek( int msec ) {
-			mediaPlayer.seekTo( msec );
+
+		public void seek(int msec)
+		{
+			mediaPlayer.seekTo(msec);
 		}
 
 		// Playlist Controls
-		public Media nextItem() {
+		public Media nextItem()
+		{
 			return playlist.next();
 		}
-		public Media prevItem() {
+
+		public Media prevItem()
+		{
 			return playlist.prev();
 		}
 
 		// Playlist List Modifiers
-		public Media[] currentPlaylist() {
-			Media[] tmp = new Media[ playlist.size() ];
+		public Media[] currentPlaylist()
+		{
+			Media[] tmp = new Media[playlist.size()];
 
-			for ( int c = 0; c < playlist.size(); c++ ) {
-				tmp[c] = playlist.get( c );
+			for (int c = 0; c < playlist.size(); c++) {
+				tmp[c] = playlist.get(c);
 			}
 
 			return tmp;
 		}
-		public boolean add( Media media ) {
-			return playlist.add( media );
+
+		public boolean add(Media media)
+		{
+			return playlist.add(media);
 		}
-		public boolean enqueue( Media[] media ) {
+
+		public boolean enqueue(Media[] media)
+		{
 			// Adds the given list of media items to the playlist
-			return playlist.addAll( Arrays.asList( media ) );
+			return playlist.addAll(Arrays.asList(media));
 		}
-		public boolean replace( Media[] media ) {
+
+		public boolean replace(Media[] media)
+		{
 			// Clears the playlist and replaces it with the given one
 			playlist.clearPlaylist();
 			playlist.clearShuffleHistory();
-			return playlist.addAll( Arrays.asList( media ) );
+			return playlist.addAll(Arrays.asList(media));
 		}
-		public void clearPlaylist() {
+
+		public void clearPlaylist()
+		{
 			playlist.clearPlaylist();
 		}
-		
+
 		// Playlist Item
-		public int getCurrentIndex() {
+		public int getCurrentIndex()
+		{
 			return playlist.getCurrentIndex();
 		}
-		public int getPlaylistSize() {
+
+		public int getPlaylistSize()
+		{
 			return playlist.size();
 		}
-		public Media getCurrentMedia() {
+
+		public Media getCurrentMedia()
+		{
 			return playlist.getCurrentMedia();
 		}
-		public Media setCurrentIndex( int index ) {
-			return playlist.setCurrentIndex( index );
+
+		public Media setCurrentIndex(int index)
+		{
+			return playlist.setCurrentIndex(index);
 		}
-		
+
 		// Shuffle/Repeat
-		public boolean getShufflePlay() {
+		public boolean getShufflePlay()
+		{
 			return playlist.getShufflePlay();
 		}
-		public boolean getRepeatPlay() {
+
+		public boolean getRepeatPlay()
+		{
 			return playlist.getRepeatPlay();
 		}
-		public void setShufflePlay( boolean randomize ) {
-			playlist.setShufflePlay( randomize );
+
+		public void setShufflePlay(boolean randomize)
+		{
+			playlist.setShufflePlay(randomize);
 
 			// Callback
-			sendMessage( MSG_SHUFFLE_CHANGED, randomize ? 0 : 1 );
+			sendMessage(MSG_SHUFFLE_CHANGED, randomize ? 0 : 1);
 		}
-		public void setRepeatPlay( boolean loop ) {
-			playlist.setRepeatPlay( loop );
+
+		public void setRepeatPlay(boolean loop)
+		{
+			playlist.setRepeatPlay(loop);
 
 			// Callback
-			sendMessage( MSG_REPEAT_CHANGED, loop ? 0 : 1 );
+			sendMessage(MSG_REPEAT_CHANGED, loop ? 0 : 1);
 		}
-		public void clearShuffleHistory() {
+
+		public void clearShuffleHistory()
+		{
 			playlist.clearShuffleHistory();
 		}
 
 		// Misc
-		public void closeService() {
+		public void closeService()
+		{
 		}
-		public void registerMessenger( Messenger messenger ) {
-			clients.add( messenger );
-		}
-		public void unregisterMessenger( Messenger messenger ) {
-			int remove = clients.lastIndexOf( messenger );
 
-			if ( remove >= 0 )
-				clients.remove( remove );
+		public void registerMessenger(Messenger messenger)
+		{
+			clients.add(messenger);
+		}
+
+		public void unregisterMessenger(Messenger messenger)
+		{
+			int remove = clients.lastIndexOf(messenger);
+
+			if (remove >= 0)
+				clients.remove(remove);
 		}
 
 		public void setAuthToken(String authToken)
@@ -277,61 +336,69 @@ public class PlayerService extends Service
 	// 10 - arg1 | new width - arg2 | new height
 	// 11 - arg1 | new size
 
-	public void sendMessage( int message, int arg1, int arg2 ) {
-		for ( int c = 0; c < clients.size(); c++ ) {
+	public void sendMessage(int message, int arg1, int arg2)
+	{
+		for (int c = 0; c < clients.size(); c++) {
 			try {
-				clients.get( c ).send( Message.obtain( null, message, arg1, arg2 ) );
-			}
-			catch ( RemoteException exp ) {
+				clients.get(c).send(Message.obtain(null, message, arg1, arg2));
+			} catch (RemoteException exp) {
 				// Client is dead, remove it
-				clients.remove( c );
+				clients.remove(c);
 			}
 		}
 	}
 
-	public void sendMessage( int message, int arg ) {
-		sendMessage( message, arg, 0 );
+	public void sendMessage(int message, int arg)
+	{
+		sendMessage(message, arg, 0);
 	}
 
-	public void sendMessage( int message ) {
-		for ( int c = 0; c < clients.size(); c++ ) {
+	public void sendMessage(int message)
+	{
+		for (int c = 0; c < clients.size(); c++) {
 			try {
-				clients.get( c ).send( Message.obtain( null, message ) );
-			}
-			catch ( RemoteException exp ) {
+				clients.get(c).send(Message.obtain(null, message));
+			} catch (RemoteException exp) {
 				// Client is dead, remove it
-				clients.remove( c );
+				clients.remove(c);
 			}
 		}
 	}
 
 	// Player Interface
-	private class PlayerInterfaceListener implements Player.PlayerListener {
-		public void onPlayerStopped() {
-			sendMessage( MSG_STOP );
+	private class PlayerInterfaceListener implements Player.PlayerListener
+	{
+		public void onPlayerStopped()
+		{
+			sendMessage(MSG_STOP);
 		}
 
-		public void onTogglePlaying( boolean playing ) {
-			if ( playing )
-				sendMessage( MSG_PLAY );
+		public void onTogglePlaying(boolean playing)
+		{
+			if (playing)
+				sendMessage(MSG_PLAY);
 			else
-				sendMessage( MSG_PAUSE );
+				sendMessage(MSG_PAUSE);
 		}
 
-		public void onNewMediaPlaying( Media media ) {
-			sendMessage( MSG_NEW_MEDIA );
+		public void onNewMediaPlaying(Media media)
+		{
+			sendMessage(MSG_NEW_MEDIA);
 		}
 
-		public void onVideoSizeChanged( int width, int height ) {
-			sendMessage( MSG_VIDEO_SIZE_CHANGED, width, height );
+		public void onVideoSizeChanged(int width, int height)
+		{
+			sendMessage(MSG_VIDEO_SIZE_CHANGED, width, height);
 		}
 
-		public void onBuffering( int buffer ) {
-			sendMessage( MSG_BUFFER_PERCENTAGE, buffer );
+		public void onBuffering(int buffer)
+		{
+			sendMessage(MSG_BUFFER_PERCENTAGE, buffer);
 		}
 
-		public void onSeek( int position ) {
-			sendMessage( MSG_SEEK_POSITION, position );
+		public void onSeek(int position)
+		{
+			sendMessage(MSG_SEEK_POSITION, position);
 		}
 
 		@Override
@@ -347,7 +414,8 @@ public class PlayerService extends Service
 	// **********************************************************************
 
 	// Start notifications
-	public void statusNotify() {
+	public void statusNotify()
+	{
 		// Setup Notification Manager for Amdroid
 		Context context = getApplicationContext();
 		NotificationManager amdroidNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -359,8 +427,8 @@ public class PlayerService extends Service
 			mediaName = playlist.getCurrentMedia().name;
 			extraString = playlist.getCurrentMedia().extraString();
 		}
-		CharSequence tickerText = "Amdroid - " + mediaName;              
-		long when = System.currentTimeMillis();        
+		CharSequence tickerText = "Amdroid - " + mediaName;
+		long when = System.currentTimeMillis();
 
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		PendingIntent mediaIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -370,9 +438,10 @@ public class PlayerService extends Service
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		amdroidNotifyManager.notify(1, notification);
 	}
-    
+
 	// Stop notifications
-	public void stopNotify() {
+	public void stopNotify()
+	{
 		// Setup Notification Manager for Amdroid
 		NotificationManager amdroidNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		amdroidNotifyManager.cancel(1);

@@ -21,113 +21,130 @@ package com.sound.ampache.objects;
  * +------------------------------------------------------------------------+
  */
 
-import android.os.Parcelable;
 import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Externalizable;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.IOException;
-import java.lang.ClassNotFoundException;
 
-public class Song extends Media implements Externalizable {
-    public String album = "";
-    public String art = "";
-    public String artist = "";
-    public String time = "";
+public class Song extends Media implements Externalizable
+{
+	public String album = "";
+	public String art = "";
+	public String artist = "";
+	public String time = "";
 
-    public String getType() {
-        return "Song";
-    }
+	public String getType()
+	{
+		return "Song";
+	}
 
-    public String extraString() {
-        if (extra == null) {
-            extra = artist + " - " + album;
-        }
+	public String extraString()
+	{
+		if (extra == null) {
+			extra = artist + " - " + album;
+		}
 
-        return extra;
-    }
+		return extra;
+	}
 
-    public String childString() {
-        return "";
-    }
+	public String childString()
+	{
+		return "";
+	}
 
-    /* Replace the old session id with our current one */
-    public String liveUrl(String authToken) {
-        return url.replaceAll("sid=[^&]+","sid=" + authToken).replaceFirst(".ogg$", ".mp3");
-    }
+	/* Replace the old session id with our current one */
+	public String liveUrl(String authToken)
+	{
+		return url.replaceAll("sid=[^&]+", "sid=" + authToken).replaceFirst(".ogg$", ".mp3");
+	}
 
-    /* Replace old session id, to use with the Album Art */
-    public String liveArt(String authToken) {
-        return art.replaceAll("auth=[^&]+","auth=" + authToken);
-    }
-    
-    public boolean hasChildren() {
-        return false;
-    }
+	/* Replace old session id, to use with the Album Art */
+	public String liveArt(String authToken)
+	{
+		return art.replaceAll("auth=[^&]+", "auth=" + authToken);
+	}
 
-    public String[] allChildren() {
-        return null;
-    }
+	public boolean hasChildren()
+	{
+		return false;
+	}
 
-    public Song() {
-    }
+	public String[] allChildren()
+	{
+		return null;
+	}
 
-    public void writeToParcel(Parcel out, int flags) {
-        super.parcelOut(out, flags);
-        out.writeString(artist);
-        out.writeString(art);
-        out.writeString(url);
-        out.writeString(album);
-        out.writeString(time);
-    }
+	public Song()
+	{
+	}
 
-    public Song( Parcel in ) {
-        readFromParcel( in );
-    }
+	public void writeToParcel(Parcel out, int flags)
+	{
+		super.parcelOut(out, flags);
+		out.writeString(artist);
+		out.writeString(art);
+		out.writeString(url);
+		out.writeString(album);
+		out.writeString(time);
+	}
 
-    public void readFromParcel( Parcel in ) {
-        super.parcelIn(in);
-        artist = in.readString();
-        art = in.readString();
-        url = in.readString();
-        album = in.readString();
-        time = in.readString();
-    }
+	public Song(Parcel in)
+	{
+		readFromParcel(in);
+	}
 
-    public static final Parcelable.Creator<Song> CREATOR
-        = new Parcelable.Creator<Song>() {
-                public Song createFromParcel(Parcel in) {
-                    return new Song(in);
-                }
+	public void readFromParcel(Parcel in)
+	{
+		super.parcelIn(in);
+		artist = in.readString();
+		art = in.readString();
+		url = in.readString();
+		album = in.readString();
+		time = in.readString();
+	}
 
-                public Song[] newArray(int size) {
-                    return new Song[size];
-                }
-            };
+	public static final Parcelable.Creator<Song> CREATOR
+			= new Parcelable.Creator<Song>()
+	{
+		public Song createFromParcel(Parcel in)
+		{
+			return new Song(in);
+		}
+
+		public Song[] newArray(int size)
+		{
+			return new Song[size];
+		}
+	};
 
     /* for external */
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id = (String) in.readObject();
-        name = (String) in.readObject();
-        artist = (String) in.readObject();
-        art = (String) in.readObject();
-        url = (String) in.readObject();
-        album = (String) in.readObject();
-        genre = (String) in.readObject();
-        time = (String) in.readObject();
-    }
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	{
+		id = (String) in.readObject();
+		name = (String) in.readObject();
+		artist = (String) in.readObject();
+		art = (String) in.readObject();
+		url = (String) in.readObject();
+		album = (String) in.readObject();
+		genre = (String) in.readObject();
+		time = (String) in.readObject();
+	}
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(id);
-        out.writeObject(name);
-        out.writeObject(artist);
-        out.writeObject(art);
-        out.writeObject(url);
-        out.writeObject(album);
-        out.writeObject(genre);
-        out.writeObject(time);
-    }
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		out.writeObject(id);
+		out.writeObject(name);
+		out.writeObject(artist);
+		out.writeObject(art);
+		out.writeObject(url);
+		out.writeObject(album);
+		out.writeObject(genre);
+		out.writeObject(time);
+	}
 
 }
 

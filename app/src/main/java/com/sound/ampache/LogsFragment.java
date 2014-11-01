@@ -39,53 +39,54 @@ import java.text.SimpleDateFormat;
 
 public class LogsFragment extends Fragment implements AdapterView.OnItemClickListener, UserLoggerListener
 {
-    private View emptyView;
-    private ListView listView;
+	private View emptyView;
+	private ListView listView;
 
-    private LogsAdapter logsAdapter;
+	private LogsAdapter logsAdapter;
 
-    @Override
-	public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
 
-    }
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.logs_layout, container, false);
-    }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		return inflater.inflate(R.layout.logs_layout, container, false);
+	}
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState)
+	{
+		super.onViewCreated(view, savedInstanceState);
 
-	    emptyView = view.findViewById(android.R.id.empty);
-	    listView = (ListView) view.findViewById(R.id.list);
-	    listView.setOnItemClickListener(this);
+		emptyView = view.findViewById(android.R.id.empty);
+		listView = (ListView) view.findViewById(R.id.list);
+		listView.setOnItemClickListener(this);
 
-	    logsAdapter = new LogsAdapter(getActivity());
-	    listView.setAdapter(logsAdapter);
+		logsAdapter = new LogsAdapter(getActivity());
+		listView.setAdapter(logsAdapter);
 
-	    amdroid.logger.addLogListener(this);
+		amdroid.logger.addLogListener(this);
 
-	    // Center the playlist at the current song
-	    centerList( 0 );
-    }
+		// Center the playlist at the current song
+		centerList(0);
+	}
 
-	private void centerList (int adjust)
+	private void centerList(int adjust)
 	{
 		int playlistIndex = amdroid.playbackControl.getPlayingIndex();
-		listView.setSelection(playlistIndex + adjust );
+		listView.setSelection(playlistIndex + adjust);
 		refreshEmptyView();
 	}
 
 	@Override
-    public void onDestroy()
+	public void onDestroy()
 	{
-        super.onDestroy();
-    }
+		super.onDestroy();
+	}
 
 	@Override
 	public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
@@ -100,82 +101,90 @@ public class LogsFragment extends Fragment implements AdapterView.OnItemClickLis
 	}
 
 	private class LogsAdapter extends BaseAdapter
-    {
-        private LayoutInflater mInflater;
+	{
+		private LayoutInflater mInflater;
 
-        public LogsAdapter(Context context) {
-            mInflater = LayoutInflater.from(context);
-        }
+		public LogsAdapter(Context context)
+		{
+			mInflater = LayoutInflater.from(context);
+		}
 
-        public int getCount() {
-            return amdroid.logger.size();
-        }
+		public int getCount()
+		{
+			return amdroid.logger.size();
+		}
 
-        public Object getItem(int position) {
-            return amdroid.logger.get(position);
-        }
+		public Object getItem(int position)
+		{
+			return amdroid.logger.get(position);
+		}
 
-        public long getItemId(int position) {
-            return position;
-        }
+		public long getItemId(int position)
+		{
+			return position;
+		}
 
-        public void refresh() {
-            notifyDataSetChanged();
-        }
+		public void refresh()
+		{
+			notifyDataSetChanged();
+		}
 
-        public void clearItems() {
-            amdroid.logger.clear();
-            notifyDataSetChanged();
-        }
+		public void clearItems()
+		{
+			amdroid.logger.clear();
+			notifyDataSetChanged();
+		}
 
-        @Override
-        public boolean isEmpty()
-        {
-            return getCount() <= 0;
-        }
+		@Override
+		public boolean isEmpty()
+		{
+			return getCount() <= 0;
+		}
 
-        public View getView(int position, View convertView, ViewGroup parent) {
-            listItem holder;
-            UserLogEntry logEntry = amdroid.logger.get(position);
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			listItem holder;
+			UserLogEntry logEntry = amdroid.logger.get(position);
 
             /* we don't reuse  */
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.log_item, null);
-                holder = new listItem();
+			if (convertView == null) {
+				convertView = mInflater.inflate(R.layout.log_item, null);
+				holder = new listItem();
 
 				holder.timestamp = (TextView) convertView.findViewById(R.id.timestamp);
 				holder.severity = (TextView) convertView.findViewById(R.id.severity);
-                holder.title = (TextView) convertView.findViewById(R.id.title);
-                holder.details = (TextView) convertView.findViewById(R.id.details);
+				holder.title = (TextView) convertView.findViewById(R.id.title);
+				holder.details = (TextView) convertView.findViewById(R.id.details);
 
-                convertView.setTag(holder);
-            } else {
-                holder = (listItem) convertView.getTag();
-            }
+				convertView.setTag(holder);
+			} else {
+				holder = (listItem) convertView.getTag();
+			}
 
-            holder.timestamp.setText(new SimpleDateFormat().format(logEntry.timestamp));
+			holder.timestamp.setText(new SimpleDateFormat().format(logEntry.timestamp));
 			holder.severity.setText(logEntry.severity.toString());
-            holder.title.setText(logEntry.title);
-            holder.details.setText(logEntry.details);
+			holder.title.setText(logEntry.title);
+			holder.details.setText(logEntry.details);
 
-            return convertView;
-        }
-    }
+			return convertView;
+		}
+	}
 
-    private static class listItem {
-        TextView timestamp;
-	    TextView severity;
-        TextView title;
-        TextView details;
-    }
+	private static class listItem
+	{
+		TextView timestamp;
+		TextView severity;
+		TextView title;
+		TextView details;
+	}
 
-    private void refreshEmptyView()
-    {
-        if (logsAdapter.isEmpty()) {
-            emptyView.setVisibility(View.VISIBLE);
-        } else {
-            emptyView.setVisibility(View.GONE);
-        }
-    }
+	private void refreshEmptyView()
+	{
+		if (logsAdapter.isEmpty()) {
+			emptyView.setVisibility(View.VISIBLE);
+		} else {
+			emptyView.setVisibility(View.GONE);
+		}
+	}
 }
 

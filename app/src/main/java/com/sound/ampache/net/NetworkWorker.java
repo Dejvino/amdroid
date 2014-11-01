@@ -83,7 +83,7 @@ public class NetworkWorker
 
 	/**
 	 * Starts the networking worker.
-	 *
+	 * <p/>
 	 * This internally forks a new thread to do the actual work in the background.
 	 */
 	public void start()
@@ -142,8 +142,7 @@ public class NetworkWorker
 			Log.d(LOG_TAG, "Network thread processing: " + op.toString() + " (" + message.toString() + ")");
 			Message reply = new Message();
 			reply.getData().putParcelable(KEY_REQUEST, message);
-			switch (op)
-			{
+			switch (op) {
 				case AUTH:
 					onAuth(message, reply);
 					break;

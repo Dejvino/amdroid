@@ -20,127 +20,145 @@ package com.sound.ampache.objects;
  * +------------------------------------------------------------------------+
  */
 
-import android.os.Parcelable; 
 import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Media extends ampacheObject implements Parcelable {
-    public String size = "";
-    public String url = "";
-    public String genre = "";
-    public String extra = null;
+public class Media extends ampacheObject implements Parcelable
+{
+	public String size = "";
+	public String url = "";
+	public String genre = "";
+	public String extra = null;
 
-    public boolean hasChildren() {
-        return false;
-    }
+	public boolean hasChildren()
+	{
+		return false;
+	}
 
-    public String[] allChildren() {
-        return null;
-    }
+	public String[] allChildren()
+	{
+		return null;
+	}
 
-    public String childString() {
-        return "";
-    }
+	public String childString()
+	{
+		return "";
+	}
 
-    public String getSize() {
-        return size;
-    }
+	public String getSize()
+	{
+		return size;
+	}
 
-    public String getType() {
-        if ( getType() == "Song" )
-            return ( (Song) this ).getType();
+	public String getType()
+	{
+		if (getType() == "Song")
+			return ((Song) this).getType();
 
-        if ( getType() == "Video" )
-            return ( (Video) this ).getType();
+		if (getType() == "Video")
+			return ((Video) this).getType();
 
-        return "";
-    }
+		return "";
+	}
 
-    public String extraString() {
-        if ( getType() == "Song" )
-            return ( (Song) this ).extraString();
+	public String extraString()
+	{
+		if (getType() == "Song")
+			return ((Song) this).extraString();
 
-        if ( getType() == "Video" )
-            return ( (Video) this ).extraString();
+		if (getType() == "Video")
+			return ((Video) this).extraString();
 
-        return "";
-    }
+		return "";
+	}
 
-    public String getLiveUrl(String authToken) {
-        if (getType().equals("Song"))
-            return ( (Song) this ).liveUrl(authToken);
+	public String getLiveUrl(String authToken)
+	{
+		if (getType().equals("Song"))
+			return ((Song) this).liveUrl(authToken);
 
-        if (getType().equals("Video"))
-            return ( (Video) this ).liveUrl(authToken);
+		if (getType().equals("Video"))
+			return ((Video) this).liveUrl(authToken);
 
-        return "";
-    }
+		return "";
+	}
 
-    /* for parcelable*/
-    public int describeContents() {
-        return CONTENTS_FILE_DESCRIPTOR;
-    }
+	/* for parcelable*/
+	public int describeContents()
+	{
+		return CONTENTS_FILE_DESCRIPTOR;
+	}
 
-    public void writeToParcel( Parcel out, int flags ) {
-        if ( getType() == "Song" ) {
-            ( (Song) this ).writeToParcel( out, flags );
-            return;
-        }
+	public void writeToParcel(Parcel out, int flags)
+	{
+		if (getType() == "Song") {
+			((Song) this).writeToParcel(out, flags);
+			return;
+		}
 
-        if ( getType() == "Video" ) {
-            ( (Video) this ).writeToParcel( out, flags );
-            return;
-        }
+		if (getType() == "Video") {
+			((Video) this).writeToParcel(out, flags);
+			return;
+		}
 
-        // Shouldn't happen, but a generic Media object
-        parcelOut( out, flags );
-    }
+		// Shouldn't happen, but a generic Media object
+		parcelOut(out, flags);
+	}
 
-    protected void parcelOut( Parcel out, int flags ) {
-        out.writeString(size);
-        out.writeString(url);
-        out.writeString(genre);
-        out.writeString(extra);
-    }
+	protected void parcelOut(Parcel out, int flags)
+	{
+		out.writeString(size);
+		out.writeString(url);
+		out.writeString(genre);
+		out.writeString(extra);
+	}
 
-    public Media( Parcel in ) {
-        readFromParcel( in );
-    }
+	public Media(Parcel in)
+	{
+		readFromParcel(in);
+	}
 
-    public Media() {
-    }
+	public Media()
+	{
+	}
 
-    public void readFromParcel( Parcel in ) {
-        if ( getType() == "Song" ) {
-            ( (Song) this ).readFromParcel( in );
-            return;
-        }
+	public void readFromParcel(Parcel in)
+	{
+		if (getType() == "Song") {
+			((Song) this).readFromParcel(in);
+			return;
+		}
 
-        if ( getType() == "Video" ) {
-            ( (Video) this ).readFromParcel( in );
-            return;
-        }
+		if (getType() == "Video") {
+			((Video) this).readFromParcel(in);
+			return;
+		}
 
-        // Shouldn't happen, but a generic Media object
-        parcelIn( in );
-    }
+		// Shouldn't happen, but a generic Media object
+		parcelIn(in);
+	}
 
-    protected void parcelIn( Parcel in ) {
-        size = in.readString();
-        url = in.readString();
-        genre = in.readString();
-        extra = in.readString();
-    }
+	protected void parcelIn(Parcel in)
+	{
+		size = in.readString();
+		url = in.readString();
+		genre = in.readString();
+		extra = in.readString();
+	}
 
-    public static final Parcelable.Creator<Media> CREATOR
-        = new Parcelable.Creator<Media>() {
-                public Media createFromParcel(Parcel in) {
-                    return new Media(in);
-                }
+	public static final Parcelable.Creator<Media> CREATOR
+			= new Parcelable.Creator<Media>()
+	{
+		public Media createFromParcel(Parcel in)
+		{
+			return new Media(in);
+		}
 
-                public Media[] newArray(int size) {
-                    return new Media[size];
-                }
-            };
+		public Media[] newArray(int size)
+		{
+			return new Media[size];
+		}
+	};
 }
 
 // ex:tabstop=4 shiftwidth=4 expandtab:

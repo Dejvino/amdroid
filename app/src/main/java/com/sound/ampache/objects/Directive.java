@@ -63,7 +63,8 @@ public class Directive implements Parcelable
 		parcel.writeStringArray(args);
 	}
 
-	public static final Parcelable.Creator<Directive> CREATOR = new Parcelable.Creator<Directive>() {
+	public static final Parcelable.Creator<Directive> CREATOR = new Parcelable.Creator<Directive>()
+	{
 		public Directive createFromParcel(Parcel in)
 		{
 			return new Directive(in);

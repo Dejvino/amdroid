@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 
 import com.sound.ampache.objects.UserLogEntry;
 import com.sound.ampache.service.AbstractUserLoggerListener;
-import com.sound.ampache.service.UserLoggerListener;
 
 /* Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
  *
@@ -39,16 +38,16 @@ import com.sound.ampache.service.UserLoggerListener;
  */
 public class MainMenuFragment extends Fragment implements View.OnClickListener
 {
-    //Identifiers for the different activities. The id's can be anything as longs as they are unique.
-    public static final String GOTO_HOME = "goto_home";
-    public static final String GOTO_MUSIC = "goto_music";
-    public static final String GOTO_PLAYLISTS = "goto_playlists";
-    public static final String GOTO_SEARCH = "goto_search";
-    public static final String GOTO_PLAYING = "goto_playing";
+	//Identifiers for the different activities. The id's can be anything as longs as they are unique.
+	public static final String GOTO_HOME = "goto_home";
+	public static final String GOTO_MUSIC = "goto_music";
+	public static final String GOTO_PLAYLISTS = "goto_playlists";
+	public static final String GOTO_SEARCH = "goto_search";
+	public static final String GOTO_PLAYING = "goto_playing";
 	public static final String GOTO_PREFS = "goto_prefs";
 	public static final String GOTO_LOGS = "goto_logs";
 
-    private MiniPlayer miniPlayer;
+	private MiniPlayer miniPlayer;
 	private Button logsButton;
 	private UserLogEntry.Severity highestLogsSeverity = null;
 
@@ -59,31 +58,33 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 	}
 
 	@Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
+	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
-        super.onViewCreated(view, savedInstanceState);
+		super.onViewCreated(view, savedInstanceState);
 
-        miniPlayer = (MiniPlayer) getFragmentManager().findFragmentById(R.id.mini_player);
+		miniPlayer = (MiniPlayer) getFragmentManager().findFragmentById(R.id.mini_player);
 
         /*  Bind onclicklisteners to our buttons in menuview_laout.xml */
-        ImageButton b = (ImageButton)view.findViewById(R.id.goto_home);
-        b.setOnClickListener(this);
-        b = (ImageButton)view.findViewById(R.id.goto_music);
-        b.setOnClickListener(this);
-        b = (ImageButton)view.findViewById(R.id.goto_playlists);
-        b.setOnClickListener(this);
-        b = (ImageButton)view.findViewById(R.id.goto_playing);
-        b.setOnClickListener(this);
-        b = (ImageButton)view.findViewById(R.id.goto_search);
-        b.setOnClickListener(this);
-		b = (ImageButton)view.findViewById(R.id.goto_preferences);
+		ImageButton b = (ImageButton) view.findViewById(R.id.goto_home);
+		b.setOnClickListener(this);
+		b = (ImageButton) view.findViewById(R.id.goto_music);
+		b.setOnClickListener(this);
+		b = (ImageButton) view.findViewById(R.id.goto_playlists);
+		b.setOnClickListener(this);
+		b = (ImageButton) view.findViewById(R.id.goto_playing);
+		b.setOnClickListener(this);
+		b = (ImageButton) view.findViewById(R.id.goto_search);
+		b.setOnClickListener(this);
+		b = (ImageButton) view.findViewById(R.id.goto_preferences);
 		b.setOnClickListener(this);
 
-		logsButton = (Button)view.findViewById(R.id.goto_logs);
+		logsButton = (Button) view.findViewById(R.id.goto_logs);
 		logsButton.setOnClickListener(this);
-		amdroid.logger.addLogListener(new AbstractUserLoggerListener() {
+		amdroid.logger.addLogListener(new AbstractUserLoggerListener()
+		{
 			@Override
-			public void onLogEntry(UserLogEntry logEntry) {
+			public void onLogEntry(UserLogEntry logEntry)
+			{
 				if (highestLogsSeverity == null || highestLogsSeverity.compareTo(logEntry.severity) < 0) {
 					highestLogsSeverity = logEntry.severity;
 				}
@@ -107,47 +108,47 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 		});
 
 		setActivity(GOTO_HOME);
-    }
+	}
 
-    @Override
-    public void onClick(View v)
-    {
-        switch (v.getId()) {
-            case (R.id.goto_home):
-                setActivity(GOTO_HOME);
-                break;
+	@Override
+	public void onClick(View v)
+	{
+		switch (v.getId()) {
+			case (R.id.goto_home):
+				setActivity(GOTO_HOME);
+				break;
 
-            case (R.id.goto_music):
-                setActivity(GOTO_MUSIC);
-                break;
+			case (R.id.goto_music):
+				setActivity(GOTO_MUSIC);
+				break;
 
-            case (R.id.goto_playlists):
-                setActivity(GOTO_PLAYLISTS);
-                break;
+			case (R.id.goto_playlists):
+				setActivity(GOTO_PLAYLISTS);
+				break;
 
-            case (R.id.goto_playing):
-                setActivity(GOTO_PLAYING);
-                break;
+			case (R.id.goto_playing):
+				setActivity(GOTO_PLAYING);
+				break;
 
-            case (R.id.goto_search):
-                setActivity(GOTO_SEARCH);
-                break;
+			case (R.id.goto_search):
+				setActivity(GOTO_SEARCH);
+				break;
 
-	        case (R.id.goto_preferences):
-		        setActivity(GOTO_PREFS);
-		        break;
+			case (R.id.goto_preferences):
+				setActivity(GOTO_PREFS);
+				break;
 
-	        case (R.id.goto_logs):
-		        setActivity(GOTO_LOGS);
-		        break;
+			case (R.id.goto_logs):
+				setActivity(GOTO_LOGS);
+				break;
 
-            default:
-                break;
-        }
+			default:
+				break;
+		}
 
-    }
+	}
 
-    public void setActivity(String id)
+	public void setActivity(String id)
 	{
 		Fragment newFragment;
 		if (GOTO_HOME.equals(id)) {
@@ -174,7 +175,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener
 			throw new RuntimeException("Cannot get fragment manager.");
 		}
 		getFragmentManager().beginTransaction()
-			.replace(R.id.mainContent, newFragment)
-			.commit();
-    }
+				.replace(R.id.mainContent, newFragment)
+				.commit();
+	}
 }

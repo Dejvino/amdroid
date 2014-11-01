@@ -21,55 +21,67 @@ package com.sound.ampache.objects;
  * +------------------------------------------------------------------------+
  */
 
-import android.os.Parcelable;
 import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Artist extends ampacheObject {
-    public String albums = "";
+public class Artist extends ampacheObject
+{
+	public String albums = "";
 
-    public boolean hasChildren() {
-        return true;
-    }
-    
-    public String extraString() {
-        return albums;
-    }
-    
-    public String getType() {
-        return "Artist";
-    }
+	public boolean hasChildren()
+	{
+		return true;
+	}
 
-    public String childString() {
-        return "artist_albums";
-    }
-    
-    public String[] allChildren() {
-        String[] dir = {"artist_songs", this.id};
-        return dir;
-    }
+	public String extraString()
+	{
+		return albums;
+	}
 
-    public Artist() {
-    }
+	public String getType()
+	{
+		return "Artist";
+	}
 
-    public void writeToParcel(Parcel out, int flags) {
-        super.writeToParcel(out, flags);
-        out.writeString(albums);
-    }
+	public String childString()
+	{
+		return "artist_albums";
+	}
 
-    public Artist(Parcel in) {
-        super.readFromParcel(in);
-        albums = in.readString();
-    }
+	public String[] allChildren()
+	{
+		String[] dir = {"artist_songs", this.id};
+		return dir;
+	}
 
-    public static final Parcelable.Creator<Artist> CREATOR
-        = new Parcelable.Creator<Artist>() {
-                public Artist createFromParcel(Parcel in) {
-                    return new Artist(in);
-                }
-                
-                public Artist[] newArray(int size) {
-                    return new Artist[size];
-                }
-            };
+	public Artist()
+	{
+	}
+
+	public void writeToParcel(Parcel out, int flags)
+	{
+		super.writeToParcel(out, flags);
+		out.writeString(albums);
+	}
+
+	public Artist(Parcel in)
+	{
+		super.readFromParcel(in);
+		albums = in.readString();
+	}
+
+	public static final Parcelable.Creator<Artist> CREATOR
+			= new Parcelable.Creator<Artist>()
+	{
+		public Artist createFromParcel(Parcel in)
+		{
+			return new Artist(in);
+		}
+
+		public Artist[] newArray(int size)
+		{
+			return new Artist[size];
+		}
+	};
 }
 

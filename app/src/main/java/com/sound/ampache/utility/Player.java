@@ -27,12 +27,6 @@ package com.sound.ampache.utility;
  * +------------------------------------------------------------------------+
  */
 
-import java.util.ArrayList;
-
-import com.sound.ampache.objects.Media;
-import com.sound.ampache.objects.Song;
-import com.sound.ampache.objects.Video;
-
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -40,7 +34,14 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class Player {
+import com.sound.ampache.objects.Media;
+import com.sound.ampache.objects.Song;
+import com.sound.ampache.objects.Video;
+
+import java.util.ArrayList;
+
+public class Player
+{
 
 	private MediaPlayer mPlayer;
 	private Playlist mPlaylist;
@@ -52,7 +53,8 @@ public class Player {
 
 	private Boolean mPlayAfterPrepared = true;
 
-	private enum STATE {
+	private enum STATE
+	{
 		Idle, Initialised, Prepared, Started, Paused, Stopped
 	}
 
@@ -67,21 +69,25 @@ public class Player {
 
 	private String authToken;
 
-	public interface PlayerListener {
-		void onTogglePlaying( boolean playing );
+	public interface PlayerListener
+	{
+		void onTogglePlaying(boolean playing);
+
 		void onPlayerStopped();
 
-		void onNewMediaPlaying( Media media );
+		void onNewMediaPlaying(Media media);
 
-		void onVideoSizeChanged( int width, int height );
+		void onVideoSizeChanged(int width, int height);
 
-		void onBuffering( int buffer );
-		void onSeek( int position );
+		void onBuffering(int buffer);
+
+		void onSeek(int position);
 
 		void onError(int what, int extra);
 	}
 
-	public Player( Context context, Playlist playlist ) {
+	public Player(Context context, Playlist playlist)
+	{
 
 		mContext = context;
 		mPlaylist = playlist;
@@ -94,31 +100,33 @@ public class Player {
 
 		// Prepare Android Media Player
 		mPlayer = new MediaPlayer();
-		mPlayer.setAudioStreamType( AudioManager.STREAM_MUSIC );
+		mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
 		// Setting up Media Player Listeners
-		mPlayer.setOnBufferingUpdateListener ( mMediaPlayerListener );
-		mPlayer.setOnCompletionListener      ( mMediaPlayerListener );
-		mPlayer.setOnErrorListener           ( mMediaPlayerListener );
-		mPlayer.setOnInfoListener            ( mMediaPlayerListener );
-		mPlayer.setOnPreparedListener        ( mMediaPlayerListener );
-		mPlayer.setOnSeekCompleteListener    ( mMediaPlayerListener );
-		mPlayer.setOnVideoSizeChangedListener( mMediaPlayerListener );
+		mPlayer.setOnBufferingUpdateListener(mMediaPlayerListener);
+		mPlayer.setOnCompletionListener(mMediaPlayerListener);
+		mPlayer.setOnErrorListener(mMediaPlayerListener);
+		mPlayer.setOnInfoListener(mMediaPlayerListener);
+		mPlayer.setOnPreparedListener(mMediaPlayerListener);
+		mPlayer.setOnSeekCompleteListener(mMediaPlayerListener);
+		mPlayer.setOnVideoSizeChangedListener(mMediaPlayerListener);
 
-		setState( STATE.Idle );
+		setState(STATE.Idle);
 	}
 
-	public void stop() {
-		for ( PlayerListener obj : mPlayerListeners ) {
+	public void stop()
+	{
+		for (PlayerListener obj : mPlayerListeners) {
 			obj.onPlayerStopped();
 		}
 
 		mPlayer.stop();
 		mPlayer.reset();
-		setState( STATE.Stopped );
+		setState(STATE.Stopped);
 	}
 
-	private void setState(STATE state) {
+	private void setState(STATE state)
+	{
 		mState = state;
 
 		for (PlayerListener obj : mPlayerListeners) {
@@ -127,57 +135,61 @@ public class Player {
 
 		String st = "";
 		switch (state) {
-		case Idle:
-			st = "Idle";
-			break;
-		case Initialised:
-			st = "Initialised";
-			break;
-		case Prepared:
-			st = "Prepared";
-			break;
-		case Started:
-			st = "Started";
-			break;
-		case Paused:
-			st = "Paused";
-			break;
-		case Stopped:
-			st = "Stopped";
-			break;
-		default:
-			st = "Unknown";
-			break;
+			case Idle:
+				st = "Idle";
+				break;
+			case Initialised:
+				st = "Initialised";
+				break;
+			case Prepared:
+				st = "Prepared";
+				break;
+			case Started:
+				st = "Started";
+				break;
+			case Paused:
+				st = "Paused";
+				break;
+			case Stopped:
+				st = "Stopped";
+				break;
+			default:
+				st = "Unknown";
+				break;
 		}
 		Log.v(TAG, "setState(" + st + ")");
 	}
 
-	private void updateBuffer(int buffer) {
+	private void updateBuffer(int buffer)
+	{
 		mBuffering = buffer;
 		for (PlayerListener obj : mPlayerListeners) {
 			obj.onBuffering(mBuffering);
 		}
 	}
 
-	public int getBuffer() {
+	public int getBuffer()
+	{
 		return mBuffering;
 	}
 
-	public void playMedia(Media media) {
+	public void playMedia(Media media)
+	{
 		if (media == null) {
 			Log.w(TAG, "Null input, cannot playMedia().");
 			return;
 		}
 		if ("Song".equals(media.getType())) {
-			playSong( (Song) media );
+			playSong((Song) media);
 		} else if ("Video".equals(media.getType())) {
-			playVideo( (Video) media );
+			playVideo((Video) media);
 		} else {
-            Log.e(TAG, "Invalid Media Type: " + media.getType());
-        }
+			Log.e(TAG, "Invalid Media Type: " + media.getType());
+		}
 	}
 
-	public void playSong(Song song) {
+	public void playSong(Song song)
+	{
 		setState(STATE.Idle);
 
 		String uri = song.liveUrl(authToken);
@@ -192,8 +204,8 @@ public class Player {
 		mSong = song;
 		updateBuffer(-1);
 
-		for ( PlayerListener obj : mPlayerListeners ) {
-			obj.onNewMediaPlaying( (Media) mSong );
+		for (PlayerListener obj : mPlayerListeners) {
+			obj.onNewMediaPlaying((Media) mSong);
 		}
 
 		mPlayer.reset();
@@ -205,8 +217,9 @@ public class Player {
 			return;
 		}
 	}
- 
-	public void playVideo(Video video) {
+
+	public void playVideo(Video video)
+	{
 		setState(STATE.Idle);
 
 		String uri = video.liveUrl(authToken);
@@ -222,7 +235,7 @@ public class Player {
 		updateBuffer(-1);
 
 		for (PlayerListener obj : mPlayerListeners) {
-			obj.onNewMediaPlaying( (Media) mVideo );
+			obj.onNewMediaPlaying((Media) mVideo);
 		}
 
 		mPlayer.reset();
@@ -235,7 +248,8 @@ public class Player {
 		}
 	}
 
-	public void doPauseResume() {
+	public void doPauseResume()
+	{
 		if (mState == STATE.Started || mState == STATE.Paused) {
 			if (mPlayer.isPlaying()) {
 				mPlayer.pause();
@@ -252,24 +266,28 @@ public class Player {
 		}
 	}
 
-	public void seekTo(int position) {
+	public void seekTo(int position)
+	{
 		if (mState == STATE.Prepared || mState == STATE.Started
 				|| mState == STATE.Paused) {
 			mPlayer.seekTo(position);
 		}
 	}
 
-	public boolean isSeekable() {
+	public boolean isSeekable()
+	{
 		return mState == STATE.Prepared || mState == STATE.Started
 				|| mState == STATE.Paused;
 	}
 
-	public boolean isPlaying() {
+	public boolean isPlaying()
+	{
 		return (mState == STATE.Initialised && mPlayAfterPrepared)
 				|| mState == STATE.Started;
 	}
 
-	public int getCurrentPosition() {
+	public int getCurrentPosition()
+	{
 		if (mState == STATE.Prepared || mState == STATE.Started
 				|| mState == STATE.Paused) {
 			return mPlayer.getCurrentPosition();
@@ -278,7 +296,8 @@ public class Player {
 		}
 	}
 
-	public int getDuration() {
+	public int getDuration()
+	{
 		if (mState == STATE.Initialised || mState == STATE.Prepared
 				|| mState == STATE.Started || mState == STATE.Paused) {
 			try {
@@ -292,7 +311,8 @@ public class Player {
 		return 0;
 	}
 
-	public void quit() {
+	public void quit()
+	{
 		TelephonyManager tmgr = (TelephonyManager) mContext
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		tmgr.listen(mPhoneStateListener, 0);
@@ -303,58 +323,65 @@ public class Player {
 		this.authToken = authToken;
 	}
 
-	public void setPlayerListener(PlayerListener StatusChangeObject) {
+	public void setPlayerListener(PlayerListener StatusChangeObject)
+	{
 		mPlayerListeners.add(StatusChangeObject);
 	}
 
 	private class MyMediaPlayerListener implements
 			MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener,
-			MediaPlayer.OnErrorListener,           MediaPlayer.OnInfoListener,
-			MediaPlayer.OnPreparedListener,        MediaPlayer.OnSeekCompleteListener,
-			MediaPlayer.OnVideoSizeChangedListener {
-		public void onBufferingUpdate( MediaPlayer mp, int buffer ) {
-			updateBuffer( buffer );
+			MediaPlayer.OnErrorListener, MediaPlayer.OnInfoListener,
+			MediaPlayer.OnPreparedListener, MediaPlayer.OnSeekCompleteListener,
+			MediaPlayer.OnVideoSizeChangedListener
+	{
+		public void onBufferingUpdate(MediaPlayer mp, int buffer)
+		{
+			updateBuffer(buffer);
 		}
 
-		public void onCompletion( MediaPlayer mp ) {
+		public void onCompletion(MediaPlayer mp)
+		{
 			mSong = null;
 			mVideo = null;
 
 			mPlayer.stop();
-			setState( STATE.Stopped );
+			setState(STATE.Stopped);
 
-			Log.v( TAG, "Completion" );
+			Log.v(TAG, "Completion");
 			Media media = mPlaylist.next();
 
-			if ( media == null ) {
-				for ( PlayerListener obj : mPlayerListeners ) {
+			if (media == null) {
+				for (PlayerListener obj : mPlayerListeners) {
 					obj.onPlayerStopped();
 				}
 
 				mPlayer.stop();
 				mPlayer.reset();
-				setState( STATE.Stopped );
+				setState(STATE.Stopped);
 
 				return;
 			}
 
-			playMedia( media );
+			playMedia(media);
 		}
 
-		public boolean onError( MediaPlayer mp, int what, int extra ) {
-			Log.e( TAG, "Player error (" + what + ", " + extra + ")" );
-			for ( PlayerListener obj : mPlayerListeners ) {
+		public boolean onError(MediaPlayer mp, int what, int extra)
+		{
+			Log.e(TAG, "Player error (" + what + ", " + extra + ")");
+			for (PlayerListener obj : mPlayerListeners) {
 				obj.onError(what, extra);
 			}
 			return true;
 		}
 
-		public boolean onInfo( MediaPlayer mp, int what, int extra ) {
-			Log.d( TAG, "Player info (" + what + ", " + extra + ")" );
+		public boolean onInfo(MediaPlayer mp, int what, int extra)
+		{
+			Log.d(TAG, "Player info (" + what + ", " + extra + ")");
 			return true;
 		}
 
-		public void onPrepared(MediaPlayer mp) {
+		public void onPrepared(MediaPlayer mp)
+		{
 			setState(STATE.Prepared);
 			if (mPlayAfterPrepared) {
 				mPlayer.start();
@@ -363,25 +390,29 @@ public class Player {
 			mPlayAfterPrepared = true;
 		}
 
-		public void onSeekComplete( MediaPlayer mp ) {
-			for ( PlayerListener obj : mPlayerListeners ) {
-				obj.onSeek( mp.getCurrentPosition() );
+		public void onSeekComplete(MediaPlayer mp)
+		{
+			for (PlayerListener obj : mPlayerListeners) {
+				obj.onSeek(mp.getCurrentPosition());
 			}
 		}
 
-		public void onVideoSizeChanged( MediaPlayer mp, int width, int height ) {
-			for ( PlayerListener obj : mPlayerListeners ) {
-				obj.onVideoSizeChanged( width, height );
+		public void onVideoSizeChanged(MediaPlayer mp, int width, int height)
+		{
+			for (PlayerListener obj : mPlayerListeners) {
+				obj.onVideoSizeChanged(width, height);
 			}
 		}
 	}
 
 	// Handle phone calls
-	private class MyPhoneStateListener extends PhoneStateListener {
+	private class MyPhoneStateListener extends PhoneStateListener
+	{
 		private Boolean mResumeAfterCall = false;
 
 		@Override
-		public void onCallStateChanged(int state, String incomingNumber) {
+		public void onCallStateChanged(int state, String incomingNumber)
+		{
 			if (state == TelephonyManager.CALL_STATE_RINGING) {
 				AudioManager audioManager = (AudioManager) mContext
 						.getSystemService(Context.AUDIO_SERVICE);
@@ -405,6 +436,8 @@ public class Player {
 				}
 			}
 		}
-	};
+	}
+
+	;
 }
 

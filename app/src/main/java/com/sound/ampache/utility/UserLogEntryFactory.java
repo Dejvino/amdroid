@@ -28,16 +28,16 @@ import com.sound.ampache.objects.UserLogEntry;
  */
 public class UserLogEntryFactory
 {
-    public static UserLogEntry create(UserLogEntry.Severity severity, String title, Media media)
-    {
-        return new UserLogEntry(severity, title, describe(media));
-    }
+	public static UserLogEntry create(UserLogEntry.Severity severity, String title, Media media)
+	{
+		return new UserLogEntry(severity, title, describe(media));
+	}
 
-    public static String describe(Media media)
-    {
-        if (media == null) {
-            return "No media";
-        }
-        return media.getType() + " @ " + media.getLiveUrl("TOKEN");
-    }
+	public static String describe(Media media)
+	{
+		if (media == null) {
+			return "No media";
+		}
+		return media.getType() + " @ " + media.getLiveUrl("TOKEN");
+	}
 }

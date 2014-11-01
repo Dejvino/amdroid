@@ -21,53 +21,64 @@ package com.sound.ampache.objects;
  * +------------------------------------------------------------------------+
  */
 
-import android.os.Parcelable;
 import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Tag extends ampacheObject {
-    public String artists = "";
-    public String albums = "";
-    public String extra = null;
+public class Tag extends ampacheObject
+{
+	public String artists = "";
+	public String albums = "";
+	public String extra = null;
 
-    public String getType() {
-        return "Tag";
-    }
-
-    public String extraString() {
-	if (extra == null) {
-	    extra = artists + " artists - " + albums + " albums";
+	public String getType()
+	{
+		return "Tag";
 	}
-	return extra;
-    }
 
-    public boolean hasChildren() {
-        return true;
-    }
+	public String extraString()
+	{
+		if (extra == null) {
+			extra = artists + " artists - " + albums + " albums";
+		}
+		return extra;
+	}
 
-    public String[] allChildren() {
-        String[] dir = {"tag_songs", this.id};
-        return dir;
-    }
+	public boolean hasChildren()
+	{
+		return true;
+	}
 
-    public String childString() {
-        return "tag_artists";
-    }
-    
-    public Tag() {
-    }
+	public String[] allChildren()
+	{
+		String[] dir = {"tag_songs", this.id};
+		return dir;
+	}
 
-    public Tag(Parcel in) {
-        super.readFromParcel(in);
-    }
+	public String childString()
+	{
+		return "tag_artists";
+	}
 
-    public static final Parcelable.Creator<Tag> CREATOR
-        = new Parcelable.Creator<Tag>() {
-                public Tag createFromParcel(Parcel in) {
-                    return new Tag(in);
-                }
+	public Tag()
+	{
+	}
 
-                public Tag[] newArray(int size) {
-                    return new Tag[size];
-                }
-            };
+	public Tag(Parcel in)
+	{
+		super.readFromParcel(in);
+	}
+
+	public static final Parcelable.Creator<Tag> CREATOR
+			= new Parcelable.Creator<Tag>()
+	{
+		public Tag createFromParcel(Parcel in)
+		{
+			return new Tag(in);
+		}
+
+		public Tag[] newArray(int size)
+		{
+			return new Tag[size];
+		}
+	};
 }

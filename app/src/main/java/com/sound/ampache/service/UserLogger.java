@@ -39,52 +39,55 @@ import java.util.Set;
  */
 public class UserLogger
 {
-    private static final int LOGS_LIMIT = 20;
+	private static final int LOGS_LIMIT = 20;
 	private static final String LOG_TAG = "Amdroid_UserLogger";
 
 	private LinkedList<UserLogEntry> logs = new LinkedList<UserLogEntry>();
 	private Set<UserLoggerListener> logListeners = new HashSet<UserLoggerListener>();
 
 	public UserLogger()
-    {
-    }
+	{
+	}
 
-    public void addLog(UserLogEntry logEntry)
-    {
-	    doAddLog(logEntry);
-    }
+	public void addLog(UserLogEntry logEntry)
+	{
+		doAddLog(logEntry);
+	}
 
-    public List<UserLogEntry> getLogs()
-    {
-        return Collections.unmodifiableList(logs);
-    }
+	public List<UserLogEntry> getLogs()
+	{
+		return Collections.unmodifiableList(logs);
+	}
 
 	public void log(UserLogEntry entry)
 	{
 		addLog(entry);
 	}
 
-    public void log(UserLogEntry.Severity severity, String title)
-    {
-        log(severity, title, null);
-    }
+	public void log(UserLogEntry.Severity severity, String title)
+	{
+		log(severity, title, null);
+	}
 
-    public void log(UserLogEntry.Severity severity, String title, String details)
-    {
-        addLog(new UserLogEntry(severity, title, details));
-    }
+	public void log(UserLogEntry.Severity severity, String title, String details)
+	{
+		addLog(new UserLogEntry(severity, title, details));
+	}
 
-    public int size() {
-        return logs.size();
-    }
+	public int size()
+	{
+		return logs.size();
+	}
 
-    public UserLogEntry get(int position) {
-        return logs.get(position);
-    }
+	public UserLogEntry get(int position)
+	{
+		return logs.get(position);
+	}
 
-    public void clear() {
-        logs.clear();
-    }
+	public void clear()
+	{
+		logs.clear();
+	}
 
 	public void addLogListener(UserLoggerListener logListener)
 	{
@@ -156,7 +159,8 @@ public class UserLogger
 		log(UserLogEntry.Severity.CRITICAL, title, details);
 	}
 
-	class IncomingHandler extends Handler {
+	class IncomingHandler extends Handler
+	{
 		@Override
 		public void handleMessage(Message msg)
 		{
@@ -168,5 +172,5 @@ public class UserLogger
 	}
 
 	// Target for the incoming messages
-	final Messenger mMessenger = new Messenger( new IncomingHandler() );
+	final Messenger mMessenger = new Messenger(new IncomingHandler());
 }

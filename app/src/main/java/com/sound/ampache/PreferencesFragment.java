@@ -24,23 +24,25 @@ package com.sound.ampache;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-public class PreferencesFragment extends PreferenceFragment {
-
-    @Override
-	public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
-    }
+public class PreferencesFragment extends PreferenceFragment
+{
 
 	@Override
-    public void onDestroy()
+	public void onCreate(Bundle savedInstanceState)
 	{
-        super.onDestroy();
+		super.onCreate(savedInstanceState);
+
+		// load the preferences from an XML resource
+		addPreferencesFromResource(R.xml.preferences);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
 
 		// we want to tell other activities that we need to reload
-        amdroid.confChanged = true;
-    }
+		amdroid.confChanged = true;
+	}
 }
 

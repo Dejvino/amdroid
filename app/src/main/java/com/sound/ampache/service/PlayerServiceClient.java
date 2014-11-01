@@ -35,7 +35,8 @@ import android.util.Log;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PlayerServiceClient {
+public class PlayerServiceClient
+{
 
 	private static final String LOG_TAG = "Ampache_Amdroid_PlayerServiceClient";
 
@@ -44,10 +45,12 @@ public class PlayerServiceClient {
 	private Context mContext;
 	private Set<PlayerServiceStatusListener> statusListeners = new HashSet<PlayerServiceStatusListener>();
 
-	public PlayerServiceClient() {
+	public PlayerServiceClient()
+	{
 	}
 
-	protected void finalize() {
+	protected void finalize()
+	{
 		releaseService();
 	}
 
@@ -67,68 +70,69 @@ public class PlayerServiceClient {
 	// Client to Service Requests *******************************************
 	// **********************************************************************
 
-	public void initService( Context context ) {
-		if ( conn == null ) {
+	public void initService(Context context)
+	{
+		if (conn == null) {
 			mContext = context;
 			conn = new PlayerServiceConnection();
 
 			Intent intent = new Intent();
-			intent.setClassName( "com.sound.ampache", "com.sound.ampache.service.PlayerService" );
+			intent.setClassName("com.sound.ampache", "com.sound.ampache.service.PlayerService");
 			try {
-				if ( !mContext.bindService( intent, conn, Context.BIND_AUTO_CREATE ) )
-					Log.d( LOG_TAG, "Failed: bindService()" );
+				if (!mContext.bindService(intent, conn, Context.BIND_AUTO_CREATE))
+					Log.d(LOG_TAG, "Failed: bindService()");
+			} catch (SecurityException exp) {
+				Log.d(LOG_TAG, "Failed (Security): bindService()");
 			}
-			catch ( SecurityException exp ) {
-				Log.d( LOG_TAG, "Failed (Security): bindService()" );
-			}
-			Log.d( LOG_TAG, "bindService()" );
+			Log.d(LOG_TAG, "bindService()");
 			// TODO Ready
-		}
-		else {
+		} else {
 			// TODO Warn user that init binding failed
 		}
 	}
 
-	public void releaseService() {
-		if ( conn != null ) {
-			mContext.unbindService( conn );
+	public void releaseService()
+	{
+		if (conn != null) {
+			mContext.unbindService(conn);
 			conn = null;
-			Log.d( LOG_TAG, "unbindService()" );
-		}
-		else {
+			Log.d(LOG_TAG, "unbindService()");
+		} else {
 			// TODO Warn user that service was already unbound
 		}
 	}
 
-	public IPlayerService serviceInterface() {
+	public IPlayerService serviceInterface()
+	{
 		// Make sure to check for DeadObjectException when calling interface functions
-		if ( conn != null ) {
-			if ( playerService != null ) {
+		if (conn != null) {
+			if (playerService != null) {
 				//Log.d( LOG_TAG, "Accessing PlayerService interface." );
 				return playerService;
 			}
 
-			Log.d( LOG_TAG, "Tried accessing PlayerService interface, but it's null..." );
+			Log.d(LOG_TAG, "Tried accessing PlayerService interface, but it's null...");
 			return null;
 		}
 
-		Log.d( LOG_TAG, "Tried accessing PlayerService interface, but connection does not exist..." );
+		Log.d(LOG_TAG, "Tried accessing PlayerService interface, but connection does not exist...");
 		// TODO Warn user that the service is not bound/connected
 		return null;
 	}
 
 
-	class PlayerServiceConnection implements ServiceConnection {
-		public void onServiceConnected( ComponentName className, IBinder boundService ) {
-			playerService = IPlayerService.Stub.asInterface( (IBinder)boundService );
-			Log.d( LOG_TAG, "onServiceConnected" );
+	class PlayerServiceConnection implements ServiceConnection
+	{
+		public void onServiceConnected(ComponentName className, IBinder boundService)
+		{
+			playerService = IPlayerService.Stub.asInterface((IBinder) boundService);
+			Log.d(LOG_TAG, "onServiceConnected");
 
 			// Send Messenger
 			try {
-				serviceInterface().registerMessenger( mMessenger );
-			}
-			catch ( RemoteException ex ) {
-				Log.e( LOG_TAG, "Could not register Service Callback Messenger!! Very Bad!!" );
+				serviceInterface().registerMessenger(mMessenger);
+			} catch (RemoteException ex) {
+				Log.e(LOG_TAG, "Could not register Service Callback Messenger!! Very Bad!!");
 			}
 
 			// notify service status listeners
@@ -141,9 +145,10 @@ public class PlayerServiceClient {
 			}
 		}
 
-		public void onServiceDisconnected( ComponentName className ) {
+		public void onServiceDisconnected(ComponentName className)
+		{
 			playerService = null;
-			Log.d( LOG_TAG, "onServiceDisconnected" );
+			Log.d(LOG_TAG, "onServiceDisconnected");
 
 			// notify service status listeners
 			Message msg = new Message();
@@ -161,14 +166,15 @@ public class PlayerServiceClient {
 	// Service to Client Messages *******************************************
 	// **********************************************************************
 
-	class IncomingHandler extends Handler {
+	class IncomingHandler extends Handler
+	{
 		@Override
-		public void handleMessage( Message msg )
+		public void handleMessage(Message msg)
 		{
 			// handle (log) message
-			switch ( msg.what ) {
+			switch (msg.what) {
 				case PlayerService.MSG_SEEK_POSITION:
-					Log.d( LOG_TAG, "MSG_SEEK_POSITION: " + msg.arg1 );
+					Log.d(LOG_TAG, "MSG_SEEK_POSITION: " + msg.arg1);
 					break;
 
 				case PlayerService.MSG_BUFFER_PERCENTAGE:
@@ -176,39 +182,39 @@ public class PlayerServiceClient {
 					break;
 
 				case PlayerService.MSG_NEW_MEDIA:
-					Log.d( LOG_TAG, "MSG_NEW_MEDIA" );
+					Log.d(LOG_TAG, "MSG_NEW_MEDIA");
 					break;
 
 				case PlayerService.MSG_PLAYLIST_INDEX:
-					Log.d( LOG_TAG, "MSG_PLAYLIST_INDEX: " + msg.arg1 );
+					Log.d(LOG_TAG, "MSG_PLAYLIST_INDEX: " + msg.arg1);
 					break;
 
 				case PlayerService.MSG_SHUFFLE_CHANGED:
-					Log.d( LOG_TAG, "MSG_SHUFFLE_CHANGED: " + msg.arg1 == "0" ? "on" : "off" );
+					Log.d(LOG_TAG, "MSG_SHUFFLE_CHANGED: " + msg.arg1 == "0" ? "on" : "off");
 					break;
 
 				case PlayerService.MSG_REPEAT_CHANGED:
-					Log.d( LOG_TAG, "MSG_REPEAT_CHANGED: " + msg.arg1 == "0" ? "on" : "off");
+					Log.d(LOG_TAG, "MSG_REPEAT_CHANGED: " + msg.arg1 == "0" ? "on" : "off");
 					break;
 
 				case PlayerService.MSG_PLAY:
-					Log.d( LOG_TAG, "MSG_PLAY" );
+					Log.d(LOG_TAG, "MSG_PLAY");
 					break;
 
 				case PlayerService.MSG_PAUSE:
-					Log.d( LOG_TAG, "MSG_PAUSE" );
+					Log.d(LOG_TAG, "MSG_PAUSE");
 					break;
 
 				case PlayerService.MSG_STOP:
-					Log.d( LOG_TAG, "MSG_STOP" );
+					Log.d(LOG_TAG, "MSG_STOP");
 					break;
 
 				case PlayerService.MSG_VIDEO_SIZE_CHANGED:
-					Log.d( LOG_TAG, "MSG_VIDEO_SIZE_CHANGED | Width: " + msg.arg1 + " | Height: " + msg.arg2 );
+					Log.d(LOG_TAG, "MSG_VIDEO_SIZE_CHANGED | Width: " + msg.arg1 + " | Height: " + msg.arg2);
 					break;
 
 				case PlayerService.MSG_PLAYLIST_CHANGED:
-					Log.d( LOG_TAG, "MSG_PLAYLIST_CHANGED: " + msg.arg1 );
+					Log.d(LOG_TAG, "MSG_PLAYLIST_CHANGED: " + msg.arg1);
 					break;
 
 				case PlayerService.MSG_SERVICE_CONNECTED:
@@ -292,6 +298,6 @@ public class PlayerServiceClient {
 	}
 
 	// Target for the incoming messages
-	final Messenger mMessenger = new Messenger( new IncomingHandler() );
+	final Messenger mMessenger = new Messenger(new IncomingHandler());
 }
 

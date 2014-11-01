@@ -21,26 +21,25 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import com.sound.ampache.AmpacheListView.IsFetchingListener;
-import com.sound.ampache.objects.Directive;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.objects.Directive;
+
+import java.util.LinkedList;
+import java.util.ListIterator;
+
 
 public class PlaylistsFragment extends Fragment implements IsFetchingListener
 {
-   
+
 	private AmpacheListView ampacheListView;
 	private TextView emptyTextView;
 
@@ -57,45 +56,43 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
-        
-        emptyTextView = (TextView) view.findViewById( android.R.id.empty );
-		emptyTextView.setText( "<No playlists found>" );
 
-		ampacheListView = (AmpacheListView) view.findViewById( android.R.id.list );
-		ampacheListView.setFastScrollEnabled( true );
-		ampacheListView.setEmptyView( emptyTextView );
-		ampacheListView.setHeaderDividersEnabled( true );
-		ampacheListView.setIsFetchingListener( this );
-        
+		emptyTextView = (TextView) view.findViewById(android.R.id.empty);
+		emptyTextView.setText("<No playlists found>");
+
+		ampacheListView = (AmpacheListView) view.findViewById(android.R.id.list);
+		ampacheListView.setFastScrollEnabled(true);
+		ampacheListView.setEmptyView(emptyTextView);
+		ampacheListView.setHeaderDividersEnabled(true);
+		ampacheListView.setIsFetchingListener(this);
+
 		progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-		progressBar.setIndeterminate( true );
-		progressBar.setVisibility( View.INVISIBLE );
+		progressBar.setIndeterminate(true);
+		progressBar.setVisibility(View.INVISIBLE);
 		headerTextView = (TextView) view.findViewById(R.id.text_view);
-		headerTextView.setText( "Playlists" );
+		headerTextView.setText("Playlists");
 
 		Directive directive = new Directive("playlists", "", "");
-     
-        ampacheListView.mDataHandler.enqueMessage( 0x1336, directive, 0, true );  
-        
-        ampacheListView.backOffset=1;
+
+		ampacheListView.mDataHandler.enqueMessage(0x1336, directive, 0, true);
+
+		ampacheListView.backOffset = 1;
 
 		amdroid.networkClient.auth();
-    }
+	}
 
-	@Override   
-	public void onIsFetchingChange( boolean isFetching )
+	@Override
+	public void onIsFetchingChange(boolean isFetching)
 	{
-		if ( isFetching )
-		{
-			progressBar.setVisibility( View.VISIBLE );
-		} else
-		{
-			progressBar.setVisibility( View.INVISIBLE );
+		if (isFetching) {
+			progressBar.setVisibility(View.VISIBLE);
+		} else {
+			progressBar.setVisibility(View.INVISIBLE);
 		}
 		updateHeaderTextView();
 	}
-    
-    private void updateHeaderTextView()
+
+	private void updateHeaderTextView()
 	{
 		String append = "Playlists";
 		LinkedList<Directive> history = ampacheListView.getHistory();
@@ -103,25 +100,25 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 		ListIterator<Directive> itr = history.listIterator();
 		//Increment once to remove the empty history field
 		itr.next();
-	    while(itr.hasNext())
-	    {
-	      append += "/"+itr.next().args[2];
-	    }
-	    
-	    headerTextView.setText( append );
-	}
-    
-    /*
-     * Override "back button" behavior on android 1.6
-     */
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            // Take care of calling this method on earlier versions of
-            // the platform where it doesn't exist.
-            return ampacheListView.backPressed();
-        }
+		while (itr.hasNext()) {
+			append += "/" + itr.next().args[2];
+		}
 
-        return false;
-    }
+		headerTextView.setText(append);
+	}
+
+	/*
+	 * Override "back button" behavior on android 1.6
+	 */
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			// Take care of calling this method on earlier versions of
+			// the platform where it doesn't exist.
+			return ampacheListView.backPressed();
+		}
+
+		return false;
+	}
 
 }

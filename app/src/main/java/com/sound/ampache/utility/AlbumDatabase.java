@@ -29,22 +29,24 @@ import com.sound.ampache.objects.Album;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class AlbumDatabase extends Database {
+public class AlbumDatabase extends Database
+{
 
 	// Constructors **************************************************
 
-	AlbumDatabase( Context context, String databaseName ) {
-		super( context );
+	AlbumDatabase(Context context, String databaseName)
+	{
+		super(context);
 
 		type = "Album";
 
 		DATABASE_NAME = databaseName;
 		TABLE_NAME = "AlbumCache";
 
-		COLUMN_NAMES.add( "artist" );
-		COLUMN_NAMES.add( "tracks" );
-		COLUMN_NAMES.add( "disk" );
-		COLUMN_NAMES.add( "year" );
+		COLUMN_NAMES.add("artist");
+		COLUMN_NAMES.add("tracks");
+		COLUMN_NAMES.add("disk");
+		COLUMN_NAMES.add("year");
 
 		completeTableCreateParam();
 	}
@@ -52,9 +54,10 @@ public class AlbumDatabase extends Database {
 
 	// Functions *****************************************************
 
-	public boolean addEntry( String id, String albumName, String numberOfTracks, String disk, String year ) {
+	public boolean addEntry(String id, String albumName, String numberOfTracks, String disk, String year)
+	{
 		// Get the current time, and convert it to a string
-		String time = Long.toString( ( new Date() ).getTime() / 1000 ); // NOTE: will be used later
+		String time = Long.toString((new Date()).getTime() / 1000); // NOTE: will be used later
 
 		// Build Insert Query
 		String queryString = "INSERT INTO " + TABLE_NAME + " " + columnList() + " VALUES (" +
@@ -65,24 +68,25 @@ public class AlbumDatabase extends Database {
 				year + ");";
 
 		try {
-			db.execSQL( queryString );
-		}
-		catch ( Exception exc ) {
+			db.execSQL(queryString);
+		} catch (Exception exc) {
 			// Damn...
-			Log.e( "Amdroid", "Database/Artist - Insertion Failure... " + queryString );
+			Log.e("Amdroid", "Database/Artist - Insertion Failure... " + queryString);
 			return false;
 		}
 
 		return true;
 	}
 
-	public boolean addEntry( Album entry ) {
-		return addEntry( entry.id, entry.name, entry.tracks, entry.disk, entry.year );
+	public boolean addEntry(Album entry)
+	{
+		return addEntry(entry.id, entry.name, entry.tracks, entry.disk, entry.year);
 	}
 
-	public boolean addEntries( ArrayList<Album> list ) {
-		for ( int c = 0; c < list.size(); c++ )
-			if ( !addEntry( list.get( c ) ) )
+	public boolean addEntries(ArrayList<Album> list)
+	{
+		for (int c = 0; c < list.size(); c++)
+			if (!addEntry(list.get(c)))
 				return false;
 
 		return true;

@@ -30,34 +30,34 @@ import com.sound.ampache.service.UserLogger;
 
 public final class amdroid extends Application
 {
-    public static Boolean playListVisible;
-    public static Boolean confChanged;
+	public static Boolean playListVisible;
+	public static Boolean confChanged;
 
-    protected static Bundle cache;
-    public static GlobalMediaPlayerControl playbackControl;
+	protected static Bundle cache;
+	public static GlobalMediaPlayerControl playbackControl;
 
 	public static GlobalNetworkClient networkClient;
 
-    public static UserLogger logger;
-    
+	public static UserLogger logger;
+
 	// This variable should be set to true once the mediaplayer object has been initialized. I.e. a
 	// data source has been set and is prepared. 
 	public static boolean mediaplayerInitialized = false;
 
 	@Override
-    public void onCreate()
+	public void onCreate()
 	{
 		super.onCreate();
 
-        logger = new UserLogger();
-        cache = new Bundle();
+		logger = new UserLogger();
+		cache = new Bundle();
 
 		networkClient = new GlobalNetworkClient(this);
 
-        playbackControl = new GlobalMediaPlayerControl();
-		playbackControl.initService( getApplicationContext() );
+		playbackControl = new GlobalMediaPlayerControl();
+		playbackControl.initService(getApplicationContext());
 
 		logger.logInfo("Application started");
-    }
+	}
 }
 

@@ -21,32 +21,25 @@ package com.sound.ampache;
  * +------------------------------------------------------------------------+
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import com.sound.ampache.AmpacheListView.IsFetchingListener;
-import com.sound.ampache.net.NetworkWorker;
-import com.sound.ampache.objects.Directive;
-
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Messenger;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.objects.Directive;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class BrowseFragment extends Fragment implements OnItemClickListener, IsFetchingListener
 {
@@ -54,17 +47,18 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 
 	// Root list and adapter. This is only used to display the root options.
 	private ListView emptyListView;
-	private ArrayList<String> emptyList = new ArrayList<String>( Arrays.asList( new String[] {
-			"Artists", "Albums", "Tags", "Videos" } ) );
+	private ArrayList<String> emptyList = new ArrayList<String>(Arrays.asList(new String[]{
+			"Artists", "Albums", "Tags", "Videos"}));
 	private ArrayAdapter<String> emptyListAdapter;
 
 	private AmpacheListView ampacheListView;
-	
+
 	private ProgressBar progressBar;
 	private TextView headerTextView;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
 		return inflater.inflate(R.layout.browse_layout, container, false);
 	}
 
@@ -77,51 +71,50 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 
 		emptyListAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_music_root, emptyList);
 		emptyListView = (ListView) rootView.findViewById(android.R.id.empty);
-		emptyListView.setAdapter( emptyListAdapter );
-		emptyListView.setOnItemClickListener( this );
+		emptyListView.setAdapter(emptyListAdapter);
+		emptyListView.setOnItemClickListener(this);
 
 		ampacheListView = (AmpacheListView) rootView.findViewById(android.R.id.list);
-		ampacheListView.setFastScrollEnabled( true );
-		ampacheListView.setEmptyView( emptyListView );
-		ampacheListView.setHeaderDividersEnabled( true );
-		ampacheListView.setIsFetchingListener( this );
+		ampacheListView.setFastScrollEnabled(true);
+		ampacheListView.setEmptyView(emptyListView);
+		ampacheListView.setHeaderDividersEnabled(true);
+		ampacheListView.setIsFetchingListener(this);
 
 		progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
-		progressBar.setIndeterminate( true );
-		progressBar.setVisibility( View.INVISIBLE );
+		progressBar.setIndeterminate(true);
+		progressBar.setVisibility(View.INVISIBLE);
 		headerTextView = (TextView) rootView.findViewById(R.id.text_view);
-		headerTextView.setText( "Music" );
+		headerTextView.setText("Music");
 
 		amdroid.networkClient.auth();
 	}
 
 	@Override
-	public void onItemClick( AdapterView<?> adapterView, View view, int position, long arg3 )
+	public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg3)
 	{
 		String value;
-		value = (String)adapterView.getItemAtPosition( position );
+		value = (String) adapterView.getItemAtPosition(position);
 		value = value.toLowerCase();
 
 		Directive directive = new Directive(value, "", value);
-		
-		emptyListView.setVisibility( View.GONE );
 
-		ampacheListView.mDataHandler.enqueMessage( 0x1336, directive, 0, true );
+		emptyListView.setVisibility(View.GONE);
+
+		ampacheListView.mDataHandler.enqueMessage(0x1336, directive, 0, true);
 
 	}
 
 	@Override
-	public void onIsFetchingChange( boolean isFetching )
+	public void onIsFetchingChange(boolean isFetching)
 	{
 		if (isFetching) {
-			progressBar.setVisibility( View.VISIBLE );
+			progressBar.setVisibility(View.VISIBLE);
+		} else {
+			progressBar.setVisibility(View.INVISIBLE);
 		}
-		else {
-			progressBar.setVisibility( View.INVISIBLE );
-		}
-		
+
 		updateHeaderTextView();
-		
+
 	}
 
 	private void updateHeaderTextView()
@@ -130,11 +123,10 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 		LinkedList<Directive> history = ampacheListView.getHistory();
 
 		ListIterator<Directive> itr = history.listIterator();
-	    while(itr.hasNext())
-	    {
-	      append += "/"+itr.next().args[2];
-	    }
-	    
-	    headerTextView.setText( append );
+		while (itr.hasNext()) {
+			append += "/" + itr.next().args[2];
+		}
+
+		headerTextView.setText(append);
 	}
 }
