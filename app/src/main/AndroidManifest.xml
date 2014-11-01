@@ -11,7 +11,8 @@
                  android:icon="@drawable/amdroid_icon">
         <!-- Main Activity -->
         <activity android:name=".MainActivity"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:launchMode="singleInstance">
           <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />

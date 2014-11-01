@@ -124,7 +124,7 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 
 		ListIterator<Directive> itr = history.listIterator();
 		while (itr.hasNext()) {
-			append += "/" + itr.next().args[2];
+			append += " > " + itr.next().args[2];
 		}
 
 		headerTextView.setText(append);

@@ -19,7 +19,7 @@
 
         <TextView android:id="@+id/title" 
                   android:singleLine="true"
-                  android:textSize="16sp"
+                  android:textSize="20sp"
                   android:textStyle="bold"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
 
         <TextView android:id="@+id/other"
                   android:singleLine="true"
-                  android:textSize="12sp"
+                  android:textSize="16sp"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
                   android:text="Artist - Album"/>
