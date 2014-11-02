@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@drawable/bg_playlist_entry" >
+
+    <ImageView android:id="@+id/art"   
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_vertical" 
+                android:src="@drawable/the_shit"/>
+
+    <TextView android:id="@+id/title"
+              android:singleLine="false"
+              android:textSize="20sp"
+              android:textStyle="bold"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Album name"
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
+
+</LinearLayout>
+

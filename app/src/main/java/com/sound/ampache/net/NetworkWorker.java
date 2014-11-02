@@ -59,8 +59,8 @@ public class NetworkWorker
 	private final Context ctx;
 
 	private SharedPreferences prefs;
-	private ampacheCommunicator comm;
-	private ampacheCommunicator.ampacheRequestHandler requestHandler;
+	private AmpacheApiClient comm;
+	private AmpacheApiClient.ampacheRequestHandler requestHandler;
 
 	private BlockingDeque<Message> messageQueue = new LinkedBlockingDeque<Message>();
 	private WorkerThread workerThread;
@@ -73,7 +73,7 @@ public class NetworkWorker
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 
 		try {
-			comm = new ampacheCommunicator(prefs, ctx);
+			comm = new AmpacheApiClient(prefs, ctx);
 			requestHandler = comm.new ampacheRequestHandler();
 			requestHandler.start();
 		} catch (Exception e) {
@@ -165,16 +165,16 @@ public class NetworkWorker
 		private void onAuth(Message request, Message reply)
 		{
 			// Check if we have a valid session, if not we try to establish one and then check again.
-			if (comm.authToken == null || comm.authToken.equals("")) {
+			if (!comm.isAuthenticated()) {
 				comm.ping();
 			}
 
-			if (comm.authToken == null || comm.authToken.equals("")) {
+			if (!comm.isAuthenticated()) {
 				Log.e(LOG_TAG, "Connection problems: " + comm.lastErr);
 			} else {
-				Log.d(LOG_TAG, "Connection ok. Auth token: " + comm.authToken);
+				Log.d(LOG_TAG, "Authentication is set.");
 			}
-			reply.getData().putString(KEY_AUTH_TOKEN, comm.authToken);
+			reply.getData().putString(KEY_AUTH_TOKEN, comm.getAuthToken());
 		}
 
 		private void onSend(Message message)

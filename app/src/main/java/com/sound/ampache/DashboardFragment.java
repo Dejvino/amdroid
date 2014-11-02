@@ -41,10 +41,6 @@ public class DashboardFragment extends Fragment
 {
 	private View rootView;
 
-	protected ArrayList<String> songs = new ArrayList<String>(Arrays.asList(new String[]{"Song 1", "Song 2", "Song 3", "Song 4", "Song 5", "Song 6"}));
-
-	protected ListView lv;
-
 	/**
 	 * Called when the activity is first created.
 	 */
@@ -66,8 +62,6 @@ public class DashboardFragment extends Fragment
 		super.onViewCreated(view, savedInstanceState);
 
 		rootView = view;
-		lv = (ListView) rootView.findViewById(R.id.recently_played_songs);
-		lv.setAdapter(new ArrayAdapter(getActivity(), R.layout.list_item_music_root, songs));
 
 		amdroid.networkClient.auth();
 	}

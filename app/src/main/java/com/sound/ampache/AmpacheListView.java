@@ -218,7 +218,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 				mCollectionAdapter.notifyDataSetChanged();
 
 				// queue up a new inc fetch if we did not receive 100 results. 100 is the limit set
-				// in ampacheCommunicator
+				// in AmpacheApiClient
 				if (aList.size() >= 100) {
 					enqueMessage(AMPACHE_INC_REQUEST, history.getLast(), msg.arg1 + 100, false);
 				} else {

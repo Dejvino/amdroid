@@ -1,25 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollView">
 
-	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	<LinearLayout
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
 
-		<TextView android:layout_width="fill_parent"
-			android:textSize="14sp" android:layout_height="wrap_content"
-			android:text="Albums of the moment:" android:layout_marginTop="10dp"
-			android:layout_marginBottom="10dp" />
+        <TextView android:layout_width="fill_parent"
+                android:textSize="14sp" android:layout_height="wrap_content"
+                android:text="Albums of the moment:" android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
 
-		<ImageView android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:src="@drawable/the_shit" />
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/randomAlbumsScroll"
+            android:layout_gravity="center_horizontal" >
 
-		<TextView android:layout_width="fill_parent"
-			android:textSize="14sp" android:layout_height="wrap_content"
-			android:text="Recently played songs:" android:layout_marginTop="10dp"
-			android:layout_marginBottom="10dp" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/randomAlbums">
 
-		<ListView android:id="@+id/recently_played_songs"
-			android:layout_width="fill_parent" android:layout_height="fill_parent" />
+                <include
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    layout="@layout/dashboard_album_item"
+                    android:layout_gravity="center_horizontal" />
 
-	</LinearLayout>
+                <include
+                    layout="@layout/dashboard_album_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/include" />
+
+                <include
+                    layout="@layout/dashboard_album_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/include2" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView android:layout_width="fill_parent"
+                android:textSize="14sp" android:layout_height="wrap_content"
+                android:text="Recently played albums:" android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recentAlbumsScroll">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/recentAlbums">
+
+                <include
+                    layout="@layout/dashboard_album_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/include3" />
+
+                <include
+                    layout="@layout/dashboard_album_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/include4" />
+
+                <include
+                    layout="@layout/dashboard_album_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/include5" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+</ScrollView>
