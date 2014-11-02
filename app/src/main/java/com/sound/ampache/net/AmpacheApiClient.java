@@ -199,57 +199,77 @@ public class AmpacheApiClient
 			{
 				public void handleMessage(Message msg)
 				{
-					Directive directiveObj = (Directive) msg.obj;
-					String[] directive = directiveObj.args;
-					String append = "";
-					boolean goodcache = false;
+					Directive directive = (Directive) msg.obj;
+
+					if (directive == null || directive.action == null) {
+						Log.e(LOG_TAG, "Cannot handle API request message, null directive or action.");
+						amdroid.logger.logWarning("Cannot handle API request message, null directive or action.");
+						return;
+					}
 					String error = null;
 					Message reply = this.obtainMessage();
-					ArrayList<ampacheObject> goods = null;
 					InputSource dataIn = null;
 
-					append = "action=" + directive[0];
+					String append = "action=" + directive.action.getKey();
 
-					if (directive[0].equals("artists")) {
-						hand = new AmpacheArtistParser();
-						append += "&filter=" + directive[1];
-					} else if (directive[0].equals("artist_albums")) {
-						append += "&filter=" + directive[1];
-						hand = new AmpacheAlbumParser();
-					} else if (directive[0].equals("artist_songs")) {
-						append += "&filter=" + directive[1];
-						hand = new AmpacheSongParser();
-					} else if (directive[0].equals("album_songs")) {
-						append += "&filter=" + directive[1];
-						hand = new AmpacheSongParser();
-					} else if (directive[0].equals("playlist_songs")) {
-						append += "&filter=" + directive[1];
-						hand = new AmpacheSongParser();
-					} else if (directive[0].equals("tag_artists")) {
-						append += "&filter=" + directive[1];
-						hand = new AmpacheArtistParser();
-					} else if (directive[0].equals("albums")) {
-						hand = new AmpacheAlbumParser();
-						append += "&filter=" + directive[1];
-					} else if (directive[0].equals("playlists")) {
-						hand = new AmpachePlaylistParser();
-						append += "&filter=" + directive[1];
-					} else if (directive[0].equals("songs")) {
-						hand = new AmpacheSongParser();
-						append += "&filter=" + directive[1];
-					} else if (directive[0].equals("tags")) {
-						hand = new AmpacheTagParser();
-						append += "&filter=" + directive[1];
-					} else if (directive[0].equals("videos")) {
-						hand = new AmpacheVideoParser();
-					} else if (directive[0].equals("search_songs")) {
-						hand = new AmpacheSongParser();
-						append += "&filter=" + directive[1];
-					} else if (directive[0].equals("stats")) {
-						hand = new AmpacheAlbumParser();
-						append += "&type=" + directive[1];
-					} else {
-						return; // new ArrayList();
+					switch (directive.action) {
+						case ARTISTS:
+							hand = new AmpacheArtistParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case ARTIST_ALBUMS:
+							hand = new AmpacheAlbumParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case ARTIST_SONGS:
+							hand = new AmpacheSongParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case ALBUM_SONGS:
+							hand = new AmpacheSongParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case PLAYLIST_SONGS:
+							hand = new AmpacheSongParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case TAG_ARTISTS:
+							hand = new AmpacheArtistParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case TAG_SONGS:
+							hand = new AmpacheSongParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case ALBUMS:
+							hand = new AmpacheAlbumParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case PLAYLISTS:
+							hand = new AmpachePlaylistParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case SONGS:
+							hand = new AmpacheSongParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case TAGS:
+							hand = new AmpacheTagParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case VIDEOS:
+							hand = new AmpacheVideoParser();
+							break;
+						case SEARCH_SONGS:
+							hand = new AmpacheSongParser();
+							append += "&filter=" + directive.getFilterForUrl();
+							break;
+						case STATS:
+							hand = new AmpacheAlbumParser();
+							append += "&type=" + directive.getFilterForUrl();
+							break;
+						default:
+							throw new RuntimeException("Unhandled API action: " + directive.action);
 					}
 
 					if (msg.what == 0x1336 || msg.what == 0x1337) {

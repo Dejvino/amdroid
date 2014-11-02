@@ -24,6 +24,8 @@ package com.sound.ampache.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sound.ampache.net.AmpacheApiAction;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -50,9 +52,9 @@ public class Song extends Media implements Externalizable
 		return extra;
 	}
 
-	public String childString()
+	public AmpacheApiAction childAction()
 	{
-		return "";
+		return null;
 	}
 
 	/* Replace the old session id with our current one */
@@ -72,7 +74,7 @@ public class Song extends Media implements Externalizable
 		return false;
 	}
 
-	public String[] allChildren()
+	public Directive getAllChildrenDirective()
 	{
 		return null;
 	}

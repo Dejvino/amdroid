@@ -24,6 +24,8 @@ package com.sound.ampache.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sound.ampache.net.AmpacheApiAction;
+
 public class Album extends ampacheObject
 {
 	public String artist = "";
@@ -45,9 +47,9 @@ public class Album extends ampacheObject
 		return extra;
 	}
 
-	public String childString()
+	public AmpacheApiAction childAction()
 	{
-		return "album_songs";
+		return AmpacheApiAction.ALBUM_SONGS;
 	}
 
 	public boolean hasChildren()
@@ -55,10 +57,9 @@ public class Album extends ampacheObject
 		return true;
 	}
 
-	public String[] allChildren()
+	public Directive getAllChildrenDirective()
 	{
-		String[] dir = {"album_songs", this.id};
-		return dir;
+		return new Directive(AmpacheApiAction.ALBUM_SONGS, this.id, "Album songs");
 	}
 
 	public Album()

@@ -23,6 +23,8 @@ package com.sound.ampache.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sound.ampache.net.AmpacheApiAction;
+
 public class Media extends ampacheObject implements Parcelable
 {
 	public String size = "";
@@ -35,14 +37,14 @@ public class Media extends ampacheObject implements Parcelable
 		return false;
 	}
 
-	public String[] allChildren()
+	public Directive getAllChildrenDirective()
 	{
 		return null;
 	}
 
-	public String childString()
+	public AmpacheApiAction childAction()
 	{
-		return "";
+		return null;
 	}
 
 	public String getSize()

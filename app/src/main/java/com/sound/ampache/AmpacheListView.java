@@ -47,9 +47,10 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 {
 
 	public DataHandler mDataHandler;
-	private collectionAdapter mCollectionAdapter;
-	private ArrayList<ampacheObject> mAmpacheObjectList;
-	private Directive directive = new Directive();
+
+	private MediaCollectionAdapter mediaCollectionAdapter;
+	private ArrayList<ampacheObject> ampacheObjectList;
+	private Directive directive = null;
 	private IsFetchingListener isFetchingListener;
 	private LinkedList<Directive> history = new LinkedList<Directive>();
 	public int backOffset = 0;
@@ -64,10 +65,10 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 		super.onFinishInflate();
 
 		mDataHandler = new DataHandler();
-		mAmpacheObjectList = new ArrayList<ampacheObject>();
-		mCollectionAdapter = new collectionAdapter(getContext(), R.layout.browsable_item,
-				mAmpacheObjectList);
-		setAdapter(mCollectionAdapter);
+		ampacheObjectList = new ArrayList<ampacheObject>();
+		mediaCollectionAdapter = new MediaCollectionAdapter(getContext(), R.layout.browsable_item,
+				ampacheObjectList);
+		setAdapter(mediaCollectionAdapter);
 		setOnItemClickListener(this);
 		setOnItemLongClickListener(this);
 	}
@@ -97,7 +98,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 			amdroid.playbackControl.addPlaylistCurrent((Song) val);
 			return;
 		}
-		Directive directive = new Directive(val.childString(), val.id, val.name);
+		Directive directive = new Directive(val.childAction(), val.id, val.name);
 
 		mDataHandler.enqueMessage(DataHandler.AMPACHE_INIT_REQUEST, directive, 0, true);
 
@@ -110,7 +111,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 		Toast.makeText(getContext(), "Enqueue " + cur.getType() + ": " + cur.toString(),
 				Toast.LENGTH_LONG).show();
 		if (cur.hasChildren()) {
-			mDataHandler.enqueMessage(DataHandler.ENQUEUE_SONG, new Directive(cur.allChildren()), 0, false);
+			mDataHandler.enqueMessage(DataHandler.ENQUEUE_SONG, cur.getAllChildrenDirective(), 0, false);
 		} else {
 			amdroid.playbackControl.addPlaylistCurrent((Media) cur);
 		}
@@ -141,7 +142,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 			ret = true;
 		} else if (history.size() == 1 - backOffset) {
 			history.removeLast();
-			mCollectionAdapter.clear();
+			mediaCollectionAdapter.clear();
 			mDataHandler.stopIncFetch = true;
 			mDataHandler.setIsFetching(false);
 			ret = true;
@@ -208,14 +209,14 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 
 				// Clear the collection adapter in case we have received "leftovers"
 				if (msg.what == AMPACHE_INIT_REQUEST) {
-					mCollectionAdapter.clear();
+					mediaCollectionAdapter.clear();
 					stopIncFetch = false;
 				}
 
 				// Update our list with the received data
-				ArrayList aList = (ArrayList) msg.obj;
-				mAmpacheObjectList.addAll(aList);
-				mCollectionAdapter.notifyDataSetChanged();
+				ArrayList<ampacheObject> aList = (ArrayList<ampacheObject>) msg.obj;
+				ampacheObjectList.addAll(aList);
+				mediaCollectionAdapter.notifyDataSetChanged();
 
 				// queue up a new inc fetch if we did not receive 100 results. 100 is the limit set
 				// in AmpacheApiClient

@@ -22,6 +22,12 @@ package com.sound.ampache.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import com.sound.ampache.amdroid;
+import com.sound.ampache.net.AmpacheApiAction;
+
+import java.net.URLEncoder;
 
 /**
  * Description:
@@ -31,23 +37,43 @@ import android.os.Parcelable;
  */
 public class Directive implements Parcelable
 {
-	public String[] args;
+	public static String LOG_TAG = "Ampache_Amdroid_Directive";
 
-	public Directive(String... args)
+	public final AmpacheApiAction action;
+	public final String filter;
+	public final String name;
+
+	public Directive(AmpacheApiAction action, String filter, String name)
 	{
-		this.args = args;
+		this.action = action;
+		this.filter = filter;
+		this.name = name;
 	}
 
 	private Directive(Parcel in)
 	{
-		args = new String[in.readInt()];
-		in.readStringArray(args);
+		String actionName = in.readString();
+		this.action= AmpacheApiAction.valueOf(actionName);
+		this.filter = in.readString();
+		this.name = in.readString();
+	}
+
+	public String getFilterForUrl()
+	{
+		try {
+			return URLEncoder.encode(filter, "UTF-8");
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "Cannot URL-encode filter value '" + filter + "'. Error: " + e.getMessage(), e);
+			amdroid.logger.logCritical("Cannot URL-encode filter value", "Filter value: " + filter + "\n"
+					+ "Error Details: " + e.toString());
+			return "";
+		}
 	}
 
 	@Override
 	public Directive clone() throws CloneNotSupportedException
 	{
-		return new Directive(args.clone());
+		return new Directive(this.action, this.filter, this.name);
 	}
 
 	@Override
@@ -59,8 +85,9 @@ public class Directive implements Parcelable
 	@Override
 	public void writeToParcel(Parcel parcel, int flags)
 	{
-		parcel.writeInt(args.length);
-		parcel.writeStringArray(args);
+		parcel.writeString(this.action.name());
+		parcel.writeString(this.filter);
+		parcel.writeString(this.name);
 	}
 
 	public static final Parcelable.Creator<Directive> CREATOR = new Parcelable.Creator<Directive>()

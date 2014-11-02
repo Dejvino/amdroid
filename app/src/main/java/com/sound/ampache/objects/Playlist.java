@@ -24,6 +24,8 @@ package com.sound.ampache.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sound.ampache.net.AmpacheApiAction;
+
 public class Playlist extends ampacheObject
 {
 	public String owner = "";
@@ -48,15 +50,14 @@ public class Playlist extends ampacheObject
 		return true;
 	}
 
-	public String childString()
+	public AmpacheApiAction childAction()
 	{
-		return "playlist_songs";
+		return AmpacheApiAction.PLAYLIST_SONGS;
 	}
 
-	public String[] allChildren()
+	public Directive getAllChildrenDirective()
 	{
-		String[] dir = {"playlist_songs", this.id};
-		return dir;
+		return new Directive(AmpacheApiAction.PLAYLIST_SONGS, this.id, "Album songs");
 	}
 
 	public Playlist()

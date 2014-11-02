@@ -23,6 +23,8 @@ package com.sound.ampache.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sound.ampache.net.AmpacheApiAction;
+
 public abstract class ampacheObject implements Parcelable
 {
 	public String id = "";
@@ -42,9 +44,9 @@ public abstract class ampacheObject implements Parcelable
 
 	abstract public String getType();
 
-	abstract public String childString();
+	abstract public AmpacheApiAction childAction();
 
-	abstract public String[] allChildren();
+	abstract public Directive getAllChildrenDirective();
 
 	abstract public boolean hasChildren();
 

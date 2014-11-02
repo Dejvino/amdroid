@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.net.AmpacheApiAction;
 import com.sound.ampache.objects.Directive;
 
 import java.util.LinkedList;
@@ -72,7 +73,7 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 		headerTextView = (TextView) view.findViewById(R.id.text_view);
 		headerTextView.setText("Playlists");
 
-		Directive directive = new Directive("playlists", "", "");
+		Directive directive = new Directive(AmpacheApiAction.PLAYLISTS, "", "Playlists");
 
 		ampacheListView.mDataHandler.enqueMessage(0x1336, directive, 0, true);
 
@@ -101,7 +102,7 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 		//Increment once to remove the empty history field
 		itr.next();
 		while (itr.hasNext()) {
-			append += "/" + itr.next().args[2];
+			append += " > " + itr.next().name;
 		}
 
 		headerTextView.setText(append);

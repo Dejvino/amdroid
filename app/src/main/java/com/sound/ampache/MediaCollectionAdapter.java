@@ -32,14 +32,14 @@ import com.sound.ampache.objects.ampacheObject;
 
 import java.util.ArrayList;
 
-public final class collectionAdapter extends ArrayAdapter
+public final class MediaCollectionAdapter extends ArrayAdapter
 {
 
 	private Context mCtx;
 	private int resid;
 	private LayoutInflater mInflater;
 
-	public collectionAdapter(Context context, int resid, ArrayList list)
+	public MediaCollectionAdapter(Context context, int resid, ArrayList list)
 	{
 		super(context, resid, list);
 		this.resid = resid;

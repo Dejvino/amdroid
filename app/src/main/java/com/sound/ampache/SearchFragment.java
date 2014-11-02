@@ -37,6 +37,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.net.AmpacheApiAction;
 import com.sound.ampache.objects.Directive;
 
 import java.net.URLEncoder;
@@ -93,38 +94,30 @@ public final class SearchFragment extends Fragment implements IsFetchingListener
 	@Override
 	public void onClick(View v)
 	{
-		String string = searchString.getText().toString();
-		if (string.length() <= 0)
+		String searchQuery = searchString.getText().toString();
+		if (searchQuery.length() <= 0)
 			return;
 
-		String[] directive = new String[3];
+		final AmpacheApiAction action;
 
 		String spinnerValue = (String) searchCriteria.getSelectedItem();
 		if (spinnerValue.equals("All"))
-			directive[0] = "search_songs";
+			action = AmpacheApiAction.SEARCH_SONGS;
 		else if (spinnerValue.equals("Artists"))
-			directive[0] = "artists";
+			action = AmpacheApiAction.ARTISTS;
 		else if (spinnerValue.equals("Albums"))
-			directive[0] = "albums";
+			action = AmpacheApiAction.ALBUMS;
 		else if (spinnerValue.equals("Tags"))
-			directive[0] = "tags";
+			action = AmpacheApiAction.TAGS;
 		else if (spinnerValue.equals("Songs"))
-			directive[0] = "songs";
+			action = AmpacheApiAction.SONGS;
 		else
-			return;
-
-		try {
-			directive[1] = URLEncoder.encode(string, "UTF-8");
-		} catch (Exception poo) {
-			return;
-		}
-
-		directive[2] = string;
+			throw new RuntimeException("Unhandled search spinner value: " + spinnerValue);
 
 		// Clear history when searching, we should only be able to go back if a search result has
 		// been clicked.
 		ampacheListView.clearHistory();
-		ampacheListView.mDataHandler.enqueMessage(0x1336, new Directive(directive), 0, true);
+		ampacheListView.mDataHandler.enqueMessage(0x1336, new Directive(action, searchQuery, searchQuery), 0, true);
 
 	}
 

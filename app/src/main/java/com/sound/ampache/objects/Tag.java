@@ -24,6 +24,8 @@ package com.sound.ampache.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sound.ampache.net.AmpacheApiAction;
+
 public class Tag extends ampacheObject
 {
 	public String artists = "";
@@ -48,15 +50,14 @@ public class Tag extends ampacheObject
 		return true;
 	}
 
-	public String[] allChildren()
+	public Directive getAllChildrenDirective()
 	{
-		String[] dir = {"tag_songs", this.id};
-		return dir;
+		return new Directive(AmpacheApiAction.TAG_SONGS, this.id, "Tag songs");
 	}
 
-	public String childString()
+	public AmpacheApiAction childAction()
 	{
-		return "tag_artists";
+		return AmpacheApiAction.TAG_ARTISTS;
 	}
 
 	public Tag()

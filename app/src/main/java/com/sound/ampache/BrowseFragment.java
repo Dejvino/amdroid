@@ -34,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.net.AmpacheApiAction;
 import com.sound.ampache.objects.Directive;
 
 import java.util.ArrayList;
@@ -46,10 +47,12 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 	private View rootView;
 
 	// Root list and adapter. This is only used to display the root options.
-	private ListView emptyListView;
-	private ArrayList<String> emptyList = new ArrayList<String>(Arrays.asList(new String[]{
-			"Artists", "Albums", "Tags", "Videos"}));
-	private ArrayAdapter<String> emptyListAdapter;
+	private ListView browseListView;
+	private ArrayList<AmpacheApiAction> browseList = new ArrayList<AmpacheApiAction>(Arrays.asList(
+				new AmpacheApiAction[] { AmpacheApiAction.ALBUMS, AmpacheApiAction.ARTISTS,
+						/*AmpacheApiAction.PLAYLISTS,*/ AmpacheApiAction.TAGS, AmpacheApiAction.VIDEOS }
+			));
+	private ArrayAdapter<AmpacheApiAction> browseListAdapter;
 
 	private AmpacheListView ampacheListView;
 
@@ -69,14 +72,14 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 
 		rootView = view;
 
-		emptyListAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_music_root, emptyList);
-		emptyListView = (ListView) rootView.findViewById(android.R.id.empty);
-		emptyListView.setAdapter(emptyListAdapter);
-		emptyListView.setOnItemClickListener(this);
+		browseListAdapter = new ArrayAdapter<AmpacheApiAction>(getActivity(), R.layout.list_item_music_root, browseList);
+		browseListView = (ListView) rootView.findViewById(android.R.id.empty);
+		browseListView.setAdapter(browseListAdapter);
+		browseListView.setOnItemClickListener(this);
 
 		ampacheListView = (AmpacheListView) rootView.findViewById(android.R.id.list);
 		ampacheListView.setFastScrollEnabled(true);
-		ampacheListView.setEmptyView(emptyListView);
+		ampacheListView.setEmptyView(browseListView);
 		ampacheListView.setHeaderDividersEnabled(true);
 		ampacheListView.setIsFetchingListener(this);
 
@@ -92,13 +95,11 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 	@Override
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg3)
 	{
-		String value;
-		value = (String) adapterView.getItemAtPosition(position);
-		value = value.toLowerCase();
+		AmpacheApiAction value = (AmpacheApiAction) adapterView.getItemAtPosition(position);
 
-		Directive directive = new Directive(value, "", value);
+		Directive directive = new Directive(value, "", value.getName());
 
-		emptyListView.setVisibility(View.GONE);
+		browseListView.setVisibility(View.GONE);
 
 		ampacheListView.mDataHandler.enqueMessage(0x1336, directive, 0, true);
 
@@ -124,7 +125,7 @@ public class BrowseFragment extends Fragment implements OnItemClickListener, IsF
 
 		ListIterator<Directive> itr = history.listIterator();
 		while (itr.hasNext()) {
-			append += " > " + itr.next().args[2];
+			append += " > " + itr.next().name;
 		}
 
 		headerTextView.setText(append);
