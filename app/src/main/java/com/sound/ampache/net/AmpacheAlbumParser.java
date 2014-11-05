@@ -53,6 +53,10 @@ import org.xml.sax.SAXException;
 			current.year = contents.toString();
 		}
 
+		if (localName.equals("art")) {
+			current.art = contents.toString();
+		}
+
 		if (localName.equals("album")) {
 			data.add(current);
 		}

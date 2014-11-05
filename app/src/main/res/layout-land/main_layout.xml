@@ -14,7 +14,7 @@
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.sound.ampache.MainMenuFragment"
+            android:name="com.sound.ampache.fragments.MainMenuFragment"
             android:id="@+id/mainMenu"
             tools:layout="@layout/main_menu_layout"/>
 
@@ -29,7 +29,7 @@
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.sound.ampache.PlaylistFragment"
+            android:name="com.sound.ampache.fragments.PlaylistFragment"
             android:id="@+id/playlist"
             android:layout_gravity="center_horizontal"
             tools:layout="@layout/playlist_layout"
@@ -38,7 +38,7 @@
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.sound.ampache.MiniPlayer"
+            android:name="com.sound.ampache.fragments.MiniPlayer"
             android:id="@+id/mini_player"
             android:layout_gravity="center_horizontal"
             tools:layout="@layout/mini_player"/>

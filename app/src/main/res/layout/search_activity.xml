@@ -41,7 +41,8 @@
 
 	<include layout="@layout/activity_header" />
 
-	<com.sound.ampache.AmpacheListView android:id="@id/android:list"
+	<com.sound.ampache.ui.VerticalAmpacheListView
+        android:id="@id/android:list"
 		android:layout_width="fill_parent" 
 		android:layout_height="fill_parent" />
 		

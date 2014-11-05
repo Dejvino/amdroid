@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.sound.ampache.R;
+import com.sound.ampache.amdroid;
 import com.sound.ampache.objects.UserLogEntry;
 import com.sound.ampache.service.AbstractUserLoggerListener;
 

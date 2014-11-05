@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.fragments;
 
 /* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
  * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
@@ -23,6 +23,9 @@ package com.sound.ampache;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import com.sound.ampache.R;
+import com.sound.ampache.amdroid;
 
 public class PreferencesFragment extends PreferenceFragment
 {

@@ -306,6 +306,8 @@ public class AmpacheApiClient
 						return;
 					}
 
+					Log.d(LOG_TAG, "Server request URL: " + urlText);
+
                         /* all done loading data, now to parse */
 					reader.setContentHandler(hand);
 					try {

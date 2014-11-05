@@ -27,6 +27,7 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.sound.ampache.service.UserLogger;
+import com.sound.ampache.utility.AlbumArtCache;
 
 public final class amdroid extends Application
 {
@@ -37,6 +38,8 @@ public final class amdroid extends Application
 	public static GlobalMediaPlayerControl playbackControl;
 
 	public static GlobalNetworkClient networkClient;
+
+	public static AlbumArtCache albumArtCache;
 
 	public static UserLogger logger;
 
@@ -51,6 +54,7 @@ public final class amdroid extends Application
 
 		logger = new UserLogger();
 		cache = new Bundle();
+		albumArtCache = new AlbumArtCache();
 
 		networkClient = new GlobalNetworkClient(this);
 

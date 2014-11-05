@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.fragments;
 
 /* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
  * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
@@ -37,6 +37,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.sound.ampache.GlobalMediaPlayerControl;
+import com.sound.ampache.R;
+import com.sound.ampache.amdroid;
 import com.sound.ampache.objects.Media;
 import com.sound.ampache.objects.Song;
 import com.sound.ampache.service.AbstractPlayerServiceStatusListener;

@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.fragments;
 
 /* Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
  * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
@@ -23,26 +23,43 @@ package com.sound.ampache;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.R;
+import com.sound.ampache.ui.AmpacheListView;
+import com.sound.ampache.ui.VerticalAmpacheListView;
+import com.sound.ampache.amdroid;
 import com.sound.ampache.net.AmpacheApiAction;
 import com.sound.ampache.objects.Directive;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-
-public class PlaylistsFragment extends Fragment implements IsFetchingListener
+public class BrowseFragment extends Fragment implements OnItemClickListener, AmpacheListView.IsFetchingListener
 {
+	public static final String ARGUMENTS_KEY_DIRECTIVE = "directive";
 
-	private AmpacheListView ampacheListView;
-	private TextView emptyTextView;
+	private View rootView;
+
+	// Root list and adapter. This is only used to display the root options.
+	private ListView browseListView;
+	private ArrayList<AmpacheApiAction> browseList = new ArrayList<AmpacheApiAction>(Arrays.asList(
+				new AmpacheApiAction[] { AmpacheApiAction.ALBUMS, AmpacheApiAction.ARTISTS,
+						/*AmpacheApiAction.PLAYLISTS,*/ AmpacheApiAction.TAGS, AmpacheApiAction.VIDEOS }
+			));
+	private ArrayAdapter<AmpacheApiAction> browseListAdapter;
+
+	private VerticalAmpacheListView ampacheListView;
 
 	private ProgressBar progressBar;
 	private TextView headerTextView;
@@ -50,7 +67,7 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		return inflater.inflate(R.layout.playlists_layout, container, false);
+		return inflater.inflate(R.layout.browse_layout, container, false);
 	}
 
 	@Override
@@ -58,28 +75,43 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 	{
 		super.onViewCreated(view, savedInstanceState);
 
-		emptyTextView = (TextView) view.findViewById(android.R.id.empty);
-		emptyTextView.setText("<No playlists found>");
+		rootView = view;
 
-		ampacheListView = (AmpacheListView) view.findViewById(android.R.id.list);
+		browseListAdapter = new ArrayAdapter<AmpacheApiAction>(getActivity(), R.layout.list_item_music_root, browseList);
+		browseListView = (ListView) rootView.findViewById(android.R.id.empty);
+		browseListView.setAdapter(browseListAdapter);
+		browseListView.setOnItemClickListener(this);
+
+		ampacheListView = (VerticalAmpacheListView) rootView.findViewById(android.R.id.list);
 		ampacheListView.setFastScrollEnabled(true);
-		ampacheListView.setEmptyView(emptyTextView);
+		ampacheListView.setEmptyView(browseListView);
 		ampacheListView.setHeaderDividersEnabled(true);
 		ampacheListView.setIsFetchingListener(this);
 
-		progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+		progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
 		progressBar.setIndeterminate(true);
 		progressBar.setVisibility(View.INVISIBLE);
-		headerTextView = (TextView) view.findViewById(R.id.text_view);
-		headerTextView.setText("Playlists");
-
-		Directive directive = new Directive(AmpacheApiAction.PLAYLISTS, "", "Playlists");
-
-		ampacheListView.mDataHandler.enqueMessage(0x1336, directive, 0, true);
-
-		ampacheListView.backOffset = 1;
+		headerTextView = (TextView) rootView.findViewById(R.id.text_view);
+		headerTextView.setText("Music");
 
 		amdroid.networkClient.auth();
+
+		if (getArguments() != null) {
+			Directive initialDirective = (Directive) getArguments().getParcelable(ARGUMENTS_KEY_DIRECTIVE);
+			if (initialDirective != null) {
+				openDirective(initialDirective);
+			}
+		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg3)
+	{
+		AmpacheApiAction value = (AmpacheApiAction) adapterView.getItemAtPosition(position);
+
+		Directive directive = new Directive(value, "", value.getName());
+
+		openDirective(directive);
 	}
 
 	@Override
@@ -90,17 +122,17 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 		} else {
 			progressBar.setVisibility(View.INVISIBLE);
 		}
+
 		updateHeaderTextView();
+
 	}
 
 	private void updateHeaderTextView()
 	{
-		String append = "Playlists";
+		String append = "Music";
 		LinkedList<Directive> history = ampacheListView.getHistory();
 
 		ListIterator<Directive> itr = history.listIterator();
-		//Increment once to remove the empty history field
-		itr.next();
 		while (itr.hasNext()) {
 			append += " > " + itr.next().name;
 		}
@@ -108,18 +140,9 @@ public class PlaylistsFragment extends Fragment implements IsFetchingListener
 		headerTextView.setText(append);
 	}
 
-	/*
-	 * Override "back button" behavior on android 1.6
-	 */
-	public boolean onKeyDown(int keyCode, KeyEvent event)
+	private void openDirective(Directive directive)
 	{
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			// Take care of calling this method on earlier versions of
-			// the platform where it doesn't exist.
-			return ampacheListView.backPressed();
-		}
-
-		return false;
+		browseListView.setVisibility(View.GONE);
+		ampacheListView.enqueRequest(directive);
 	}
-
 }

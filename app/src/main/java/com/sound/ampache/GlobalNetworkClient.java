@@ -21,11 +21,15 @@ package com.sound.ampache;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 
 import com.sound.ampache.net.NetworkWorker;
+import com.sound.ampache.utility.ResultCallback;
+
+import java.util.concurrent.Callable;
 
 /**
  * Description:
@@ -64,6 +68,27 @@ public class GlobalNetworkClient
 
 		Message msg = new Message();
 		msg.getData().putSerializable(NetworkWorker.KEY_OPERATION, NetworkWorker.Operation.AUTH);
+		msg.replyTo = replyTo;
+		sendMessage(msg);
+	}
+
+	public void downloadImage(String url, final ResultCallback<Bitmap> callback)
+	{
+		// register playback result listener
+		Messenger replyTo = new Messenger(new Handler()
+		{
+			@Override
+			public void handleMessage(Message msg)
+			{
+				super.handleMessage(msg);
+				Bitmap bitmap = (Bitmap) msg.getData().getParcelable(NetworkWorker.KEY_RESPONSE_IMAGE);
+				callback.onResultCallback(bitmap);
+			}
+		});
+
+		Message msg = new Message();
+		msg.getData().putSerializable(NetworkWorker.KEY_OPERATION, NetworkWorker.Operation.DOWNLOAD_IMAGE);
+		msg.getData().putString(NetworkWorker.KEY_REQUEST_URL, url);
 		msg.replyTo = replyTo;
 		sendMessage(msg);
 	}

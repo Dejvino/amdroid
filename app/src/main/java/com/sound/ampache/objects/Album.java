@@ -32,6 +32,7 @@ public class Album extends ampacheObject
 	public String tracks = "";
 	public String disk = "";
 	public String year = "";
+	public String art = "";
 	public String extra = null;
 
 	public String getType()
@@ -73,6 +74,7 @@ public class Album extends ampacheObject
 		out.writeString(tracks);
 		out.writeString(disk);
 		out.writeString(year);
+		out.writeString(art);
 	}
 
 	public Album(Parcel in)
@@ -82,6 +84,7 @@ public class Album extends ampacheObject
 		tracks = in.readString();
 		disk = in.readString();
 		year = in.readString();
+		art = in.readString();
 	}
 
 	public static final Parcelable.Creator<Album> CREATOR

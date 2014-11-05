@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.fragments;
 
 /* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
  * Copyright (c) 2014 David Hrdina Nemecek <dejvino@gmail.com>
@@ -32,6 +32,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.sound.ampache.R;
+import com.sound.ampache.amdroid;
 import com.sound.ampache.objects.UserLogEntry;
 import com.sound.ampache.service.UserLoggerListener;
 

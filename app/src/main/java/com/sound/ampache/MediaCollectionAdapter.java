@@ -22,13 +22,19 @@ package com.sound.ampache;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sound.ampache.objects.Album;
 import com.sound.ampache.objects.ampacheObject;
+import com.sound.ampache.utility.ResultCallback;
 
 import java.util.ArrayList;
 
@@ -47,7 +53,8 @@ public final class MediaCollectionAdapter extends ArrayAdapter
 		mInflater = LayoutInflater.from(context);
 	}
 
-	public View getView(int position, View convertView, ViewGroup parent)
+	@Override
+	public View getView(final int position, View convertView, ViewGroup parent)
 	{
 		bI holder;
 		ampacheObject cur = (ampacheObject) getItem(position);
@@ -57,19 +64,56 @@ public final class MediaCollectionAdapter extends ArrayAdapter
 			convertView = mInflater.inflate(resid, null);
 			holder = new bI();
 
+			holder.root = convertView;
 			holder.title = (TextView) convertView.findViewById(R.id.title);
 			holder.other = (TextView) convertView.findViewById(R.id.other);
+			holder.art = (ImageView) convertView.findViewById(R.id.art);
 
 			convertView.setTag(holder);
 		} else {
 			holder = (bI) convertView.getTag();
 		}
 
+		convertView.setId(position);
+
 		if (cur != null) {
 			holder.title.setText(cur.toString());
 			holder.other.setText(cur.extraString());
+			if (holder.art != null) {
+				holder.art.setImageResource(R.drawable.album_loading);
+				if (cur instanceof Album) {
+					String url = ((Album) cur).art;
+					final View requestView = convertView;
+					final ImageView requestArtView = holder.art;
+					amdroid.albumArtCache.requestBitmap(url, new ResultCallback<Bitmap>()
+					{
+						@Override
+						public void onResultCallback(Bitmap result)
+						{
+							if (position != requestView.getId()) {
+								// reused view, run away!
+								return;
+							}
+							if (result != null) {
+								requestArtView.setImageBitmap(result);
+							} else {
+								requestArtView.setImageResource(R.drawable.album_not_available);
+							}
+						}
+					});
+				}
+			}
 		}
 		return convertView;
+	}
+
+	public static final class bI
+	{
+		View root;
+
+		TextView title;
+		TextView other;
+		ImageView art;
 	}
 }
 

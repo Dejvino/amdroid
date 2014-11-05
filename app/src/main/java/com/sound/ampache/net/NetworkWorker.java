@@ -22,6 +22,7 @@ package com.sound.ampache.net;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Message;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -45,6 +46,8 @@ public class NetworkWorker
 	public static final String KEY_OPERATION = "operation";
 	public static final String KEY_MESSAGE = "message";
 	public static final String KEY_AUTH_TOKEN = "auth_token";
+	public static final String KEY_REQUEST_URL = "request_url";
+	public static final String KEY_RESPONSE_IMAGE = "response_image";
 	public static final String KEY_REQUEST = "original_request_message";
 
 	public static final String KEY_TERMINATE = "network_worker_terminate";
@@ -54,6 +57,7 @@ public class NetworkWorker
 		PING,
 		AUTH,
 		SEND,
+		DOWNLOAD_IMAGE,
 	}
 
 	private final Context ctx;
@@ -146,6 +150,9 @@ public class NetworkWorker
 				case AUTH:
 					onAuth(message, reply);
 					break;
+				case DOWNLOAD_IMAGE:
+					onDownloadImage(message, reply);
+					break;
 				case SEND:
 					onSend(message);
 					break;
@@ -175,6 +182,12 @@ public class NetworkWorker
 				Log.d(LOG_TAG, "Authentication is set.");
 			}
 			reply.getData().putString(KEY_AUTH_TOKEN, comm.getAuthToken());
+		}
+
+		private void onDownloadImage(Message message, Message reply)
+		{
+			Bitmap bitmap = ImageDownloader.getImageBitmap(message.getData().getString(KEY_REQUEST_URL));
+			reply.getData().putParcelable(KEY_RESPONSE_IMAGE, bitmap);
 		}
 
 		private void onSend(Message message)

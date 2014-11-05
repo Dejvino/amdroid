@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.fragments;
 
 /* Copyright (c) 2008 Kevin James Purdy <purdyk@onid.orst.edu>
  * Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
@@ -37,6 +37,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sound.ampache.R;
+import com.sound.ampache.amdroid;
 import com.sound.ampache.service.AbstractPlayerServiceStatusListener;
 
 import java.util.Formatter;
@@ -268,7 +270,7 @@ public final class MiniPlayer extends Fragment
 	/**
 	 * Reads the progress information from the player service and updates the corresponding UI elements.
 	 *
-	 * @return position (progress), returned from {@link GlobalMediaPlayerControl#getCurrentPosition()}.
+	 * @return position (progress), returned from {@link com.sound.ampache.GlobalMediaPlayerControl#getCurrentPosition()}.
 	 */
 	private int setProgress()
 	{

@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.ui;
 
 /* Copyright (c) 2010 Kristopher Heijari < iix.ftw@gmail.com >
  * Copyright (c) 2010 Jacob Alexander   < haata@users.sf.net >
@@ -22,9 +22,6 @@ package com.sound.ampache;
  */
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Messenger;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +31,9 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.sound.ampache.MediaCollectionAdapter;
+import com.sound.ampache.R;
+import com.sound.ampache.amdroid;
 import com.sound.ampache.objects.Directive;
 import com.sound.ampache.objects.Media;
 import com.sound.ampache.objects.Song;
@@ -42,11 +42,11 @@ import com.sound.ampache.objects.ampacheObject;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class AmpacheListView extends ListView implements OnItemClickListener,
-		OnItemLongClickListener
+public class VerticalAmpacheListView extends ListView implements OnItemClickListener,
+		OnItemLongClickListener, AmpacheListView
 {
 
-	public DataHandler mDataHandler;
+	public AmpacheListHandler mDataHandler;
 
 	private MediaCollectionAdapter mediaCollectionAdapter;
 	private ArrayList<ampacheObject> ampacheObjectList;
@@ -55,16 +55,17 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 	private LinkedList<Directive> history = new LinkedList<Directive>();
 	public int backOffset = 0;
 
-	public AmpacheListView(Context context, AttributeSet attrs)
+	public VerticalAmpacheListView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 	}
 
+	@Override
 	protected void onFinishInflate()
 	{
 		super.onFinishInflate();
 
-		mDataHandler = new DataHandler();
+		mDataHandler = new AmpacheListHandler(this);
 		ampacheObjectList = new ArrayList<ampacheObject>();
 		mediaCollectionAdapter = new MediaCollectionAdapter(getContext(), R.layout.browsable_item,
 				ampacheObjectList);
@@ -100,7 +101,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 		}
 		Directive directive = new Directive(val.childAction(), val.id, val.name);
 
-		mDataHandler.enqueMessage(DataHandler.AMPACHE_INIT_REQUEST, directive, 0, true);
+		mDataHandler.enqueMessage(AmpacheListHandler.AMPACHE_INIT_REQUEST, directive, 0, true);
 
 	}
 
@@ -111,16 +112,11 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 		Toast.makeText(getContext(), "Enqueue " + cur.getType() + ": " + cur.toString(),
 				Toast.LENGTH_LONG).show();
 		if (cur.hasChildren()) {
-			mDataHandler.enqueMessage(DataHandler.ENQUEUE_SONG, cur.getAllChildrenDirective(), 0, false);
+			mDataHandler.enqueMessage(AmpacheListHandler.ENQUEUE_SONG, cur.getAllChildrenDirective(), 0, false);
 		} else {
 			amdroid.playbackControl.addPlaylistCurrent((Media) cur);
 		}
 		return true;
-	}
-
-	public interface IsFetchingListener
-	{
-		public void onIsFetchingChange(boolean isFetching);
 	}
 
 	public void setIsFetchingListener(IsFetchingListener listener)
@@ -138,7 +134,7 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
-			mDataHandler.enqueMessage(DataHandler.AMPACHE_INIT_REQUEST, directive, 0, false);
+			mDataHandler.enqueMessage(AmpacheListHandler.AMPACHE_INIT_REQUEST, directive, 0, false);
 			ret = true;
 		} else if (history.size() == 1 - backOffset) {
 			history.removeLast();
@@ -151,88 +147,42 @@ public class AmpacheListView extends ListView implements OnItemClickListener,
 		return ret;
 	}
 
-	protected class DataHandler extends Handler
+	@Override
+	public void onIsFetchingChange(boolean isFetching)
 	{
-
-		public static final int AMPACHE_INIT_REQUEST = 0x1336;
-		public static final int AMPACHE_INC_REQUEST = 0x1337;
-		public static final int ENQUEUE_SONG = 0x1339;
-
-		public boolean stopIncFetch = false;
-		public boolean isFetching = false;
-
-		public void setIsFetching(boolean val)
-		{
-			if (isFetching != val) {
-				isFetching = val;
-				if (isFetchingListener != null) {
-					isFetchingListener.onIsFetchingChange(isFetching);
-				}
-			}
+		if (isFetchingListener != null) {
+			isFetchingListener.onIsFetchingChange(isFetching);
 		}
-
-		public void enqueMessage(int what, Directive directive, int startIndex, boolean addHistory)
-		{
-			if (addHistory) {
-				try {
-					history.add(directive.clone());
-				} catch (CloneNotSupportedException e) {
-					Log.e(VIEW_LOG_TAG, "Cloning of directive failed.", e);
-				}
-			}
-			if (isFetching && what == AMPACHE_INIT_REQUEST) {
-				stopIncFetch = true;
-			}
-			if (what != ENQUEUE_SONG) {
-				setIsFetching(true);
-			}
-			Message requestMsg = this.obtainMessage();
-			requestMsg.arg1 = startIndex;
-			requestMsg.obj = directive;
-			requestMsg.what = what;
-			// tell it how to handle the stuff
-			requestMsg.replyTo = new Messenger(this);
-			// old:
-			//amdroid.requestHandler.incomingRequestHandler.sendMessage( requestMsg );
-			Log.d("AmpacheAmdroidList", "Sending message: " + requestMsg.toString());
-			amdroid.networkClient.sendMessage(requestMsg);
-		}
-
-		@Override
-		public void handleMessage(Message msg)
-		{
-			Log.d("AmpacheAmdroidList", "Handling message: " + msg.toString());
-			if (msg.what == AMPACHE_INIT_REQUEST || msg.what == AMPACHE_INC_REQUEST) {
-				if (stopIncFetch && msg.what == AMPACHE_INC_REQUEST) {
-					return;
-				}
-
-				// Clear the collection adapter in case we have received "leftovers"
-				if (msg.what == AMPACHE_INIT_REQUEST) {
-					mediaCollectionAdapter.clear();
-					stopIncFetch = false;
-				}
-
-				// Update our list with the received data
-				ArrayList<ampacheObject> aList = (ArrayList<ampacheObject>) msg.obj;
-				ampacheObjectList.addAll(aList);
-				mediaCollectionAdapter.notifyDataSetChanged();
-
-				// queue up a new inc fetch if we did not receive 100 results. 100 is the limit set
-				// in AmpacheApiClient
-				if (aList.size() >= 100) {
-					enqueMessage(AMPACHE_INC_REQUEST, history.getLast(), msg.arg1 + 100, false);
-				} else {
-					setIsFetching(false);
-				}
-
-			} else if (msg.what == ENQUEUE_SONG) {
-				amdroid.playbackControl.addAllPlaylistCurrent((ArrayList) msg.obj);
-			} else {
-				// Handle error
-			}
-		}
-
 	}
 
+	@Override
+	public void onEnqueMessage(int what, Directive directive, int startIndex, boolean addHistory)
+	{
+		if (addHistory) {
+			try {
+				history.add(directive.clone());
+			} catch (CloneNotSupportedException e) {
+				Log.e(View.VIEW_LOG_TAG, "Cloning of directive failed.", e);
+			}
+		}
+	}
+
+	@Override
+	public void onClearAmpacheObjects()
+	{
+		mediaCollectionAdapter.clear();
+	}
+
+	@Override
+	public void onAddAmpacheObjects(ArrayList<ampacheObject> ampacheObjects)
+	{
+		ampacheObjectList.addAll(ampacheObjects);
+		mediaCollectionAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void enqueRequest(Directive directive)
+	{
+		mDataHandler.enqueMessage(0x1336, directive, 0, true);
+	}
 }

@@ -1,4 +1,4 @@
-package com.sound.ampache;
+package com.sound.ampache.fragments;
 
 /* Copyright (c) 2008-2009 	Kevin James Purdy <purdyk@gmail.com>
  * Copyright (c) 2010 		Krisopher Heijari <iif.ftw@gmail.com>
@@ -36,19 +36,19 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.sound.ampache.AmpacheListView.IsFetchingListener;
+import com.sound.ampache.R;
+import com.sound.ampache.ui.AmpacheListView;
+import com.sound.ampache.ui.VerticalAmpacheListView;
 import com.sound.ampache.net.AmpacheApiAction;
 import com.sound.ampache.objects.Directive;
 
-import java.net.URLEncoder;
-
-public final class SearchFragment extends Fragment implements IsFetchingListener, OnClickListener
+public final class SearchFragment extends Fragment implements AmpacheListView.IsFetchingListener, OnClickListener
 {
 
 	private Spinner searchCriteria;
 	private EditText searchString;
 
-	private AmpacheListView ampacheListView;
+	private VerticalAmpacheListView ampacheListView;
 	private TextView emptyTextView;
 
 	private ProgressBar progressBar;
@@ -78,7 +78,7 @@ public final class SearchFragment extends Fragment implements IsFetchingListener
 		emptyTextView = (TextView) view.findViewById(android.R.id.empty);
 		emptyTextView.setText("<No search results>");
 
-		ampacheListView = (AmpacheListView) view.findViewById(android.R.id.list);
+		ampacheListView = (VerticalAmpacheListView) view.findViewById(android.R.id.list);
 		ampacheListView.setFastScrollEnabled(true);
 		ampacheListView.setEmptyView(emptyTextView);
 		ampacheListView.setHeaderDividersEnabled(true);
@@ -117,7 +117,7 @@ public final class SearchFragment extends Fragment implements IsFetchingListener
 		// Clear history when searching, we should only be able to go back if a search result has
 		// been clicked.
 		ampacheListView.clearHistory();
-		ampacheListView.mDataHandler.enqueMessage(0x1336, new Directive(action, searchQuery, searchQuery), 0, true);
+		ampacheListView.enqueRequest(new Directive(action, searchQuery, searchQuery));
 
 	}
 
