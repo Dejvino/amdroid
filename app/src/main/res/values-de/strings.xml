@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Amdroid</string>
+    <string name="prefs_name">Android Einstellungen</string>
+    <string name="play_name">Momentan am Laufen</string>
+    <string name="server_preferences">Ampache Server</string>
+    <string name="title_server_preference">Ampache Url</string>
+    <string name="summary_server_preference">Gib die volle URL für deinen ampache Server ein (d.h. http://beispiel.de/ampache )</string>
+    <string name="dialog_server_preference">URL</string>
+    <string name="title_username_preference">Ampache Benutzername</string>
+    <string name="dialog_username_preference">Benutzername</string>
+    <string name="title_password_preference">Ampache Passwort</string>
+    <string name="dialog_password_preference">Passwort</string>
+    <string name="search_label">Lieder</string>
+    <string name="shuffle">Mischen</string>
+    <string name="shuffle2">|Mischen|</string>
+    <string name="repeat">Wiederholen</string>
+    <string name="repeat2">|Wiederholen|</string>
+    <color name="log_title_debug">#AAAAAA</color>
+    <color name="log_title_info">#FAFAFA</color>
+    <color name="log_title_warning">#FFFF11</color>
+    <color name="log_title_critical">#FF3311</color>
+</resources>
