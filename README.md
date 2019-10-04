@@ -1,6 +1,8 @@
 Amdroid
 =======
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 Ampache client for Android. Allows streaming music from any Ampache server.
 
 ![](https://raw.githubusercontent.com/Dejvino/amdroid/master/screenshot_01.png)
